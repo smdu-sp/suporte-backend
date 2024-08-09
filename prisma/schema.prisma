@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Permissao {
+  DEV
+  ADM
+  TEC
+  USR
+}
+
+model Usuario {
+  id            String      @id @default(uuid())
+  nome          String
+  login         String      @unique
+  email         String      @unique
+  permissao     Permissao   @default(USR)
+  status        Int         @default(1)
+
+  ultimologin   DateTime    @default(now())
+  criadoEm      DateTime    @default(now())
+  atualizadoEm  DateTime    @default(now()) @updatedAt
+
+  ordens      Ordem[]
+  servicos    Servico[]
+  unidade     Unidade?   @relation(fields: [unidade_id], references: [id])
+  unidade_id  String?
+
+  @@map("usuarios")
+}
+
+model Unidade {
+  id        String    @id @default(uuid())
+  nome      String    @unique
+  sigla     String    @unique
+  codigo    String    @unique
+  status    Boolean   @default(true)
+
+  usuarios  Usuario[]
+  ordens    Ordem[]
+
+  @@map("unidades")
+}
+
+model Ordem {
+  id                String    @id
+  unidade_id        String
+  unidade           Unidade   @relation(fields: [unidade_id], references: [id])
+  andar             Int
+  sala              String
+  solicitante       Usuario   @relation(fields: [solicitante_id], references: [id])
+  solicitante_id    String
+  tratar_com        String?
+  telefone          String    @default("")
+  data_solicitacao  DateTime  @default(now())
+  tipo              Int       @default(0)
+  status            Int       @default(1)
+  prioridade        Int       @default(1)
+  observacoes       String
+  servicos          Servico[]
+
+  @@map("ordens")
+}
+
+model Servico {
+  id                  String              @id @default(uuid())
+  tecnico             Usuario             @relation(fields: [tecnico_id], references: [id])
+  tecnico_id          String
+  data_inicio         DateTime            @default(now())
+  data_fim            DateTime?
+  descricao           String?
+  materiais           Material[]
+  suspensoes          Suspensao[]
+  ordem               Ordem               @relation(fields: [ordem_id], references: [id])
+  ordem_id            String
+  avaliado_em         DateTime?
+  status              Int                 @default(1)
+  observacao          String?
+
+  @@map("servicos")
+}
+
+model Suspensao {
+  id                  String              @id @default(uuid())
+  servico_id          String
+  servico             Servico             @relation(fields: [servico_id], references: [id])
+  motivo              String
+  inicio              DateTime            @default(now())
+  termino             DateTime?
+  status              Boolean             @default(true)
+
+  @@map("suspensoes")
+}
+
+model SugestaoMaterial {
+  id                  String              @id @default(uuid())
+  nome                String              @unique
+
+  @@map("sugestao_materiais")
+}
+
+model Material {
+  id          String @id @default(uuid())
+  nome        String
+  quantidade  Float
+  medida      String
+
+  servico_id  String
+  servico     Servico @relation(fields: [servico_id], references: [id])
+
+  @@map("materiais")
+}
