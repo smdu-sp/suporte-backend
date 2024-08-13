@@ -6,7 +6,6 @@ import { AppService } from 'src/app.service';
 
 @Injectable()
 export class TiposService {
-
   constructor(
     private prisma: PrismaService,
     private app: AppService
