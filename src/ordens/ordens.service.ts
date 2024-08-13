@@ -52,7 +52,7 @@ export class OrdensService {
 
   async criar(createOrdemDto: CreateOrdemDto, solicitante: Usuario) {
     const id = await this.geraId();
-    const { unidade_id, andar, sala, tipo, observacoes, telefone, prioridade, tratar_com } = createOrdemDto;
+    const { unidade_id, andar, sala, tipo_id, observacoes, telefone, prioridade, tratar_com, categoria_id, subcategoria_id } = createOrdemDto;
     const chamadoAberto = await this.prisma.ordem.findFirst({
       where: {
         unidade_id,
@@ -63,7 +63,7 @@ export class OrdensService {
     const unidade = await this.prisma.unidade.findUnique({ where: { id: unidade_id } });
     if (!unidade) throw new ForbiddenException('Unidade não encontrada');
     const novaOrdem = await this.prisma.ordem.create({
-      data: { id, unidade_id, solicitante_id: solicitante.id, andar, sala, tipo, observacoes, telefone, tratar_com, prioridade: prioridade ? prioridade : 1 }
+      data: { id, unidade_id, solicitante_id: solicitante.id, andar, sala, tipo_id, observacoes, telefone, tratar_com, prioridade: prioridade ? prioridade : 1, categoria_id, subcategoria_id }
     });
     if (!novaOrdem) throw new InternalServerErrorException('Não foi possível criar o chamado. Tente novamente');
     return novaOrdem;
@@ -87,7 +87,6 @@ export class OrdensService {
       ...(solicitante_id !== '' && { solicitante_id }),
       ...(sala !== '' && { sala }),
       ...(andar !== 0 && { sala }),
-      ...(tipo !== 0 && { tipo }),
       ...(usuario.permissao === 'USR' && { solicitante_id: usuario.id }),
     };
     const total = await this.prisma.ordem.count({ where: searchParams });
@@ -101,11 +100,7 @@ export class OrdensService {
       include: {
         unidade: true,
         solicitante: true,
-        servicos: {
-          include: {
-            tecnico: true
-          }
-        }
+        servicos: true
       }
     });
     return {
@@ -126,7 +121,6 @@ export class OrdensService {
           include: {
             suspensoes: true,
             materiais: true,
-            tecnico: true
           },
           orderBy: { data_inicio: 'desc' }
         },

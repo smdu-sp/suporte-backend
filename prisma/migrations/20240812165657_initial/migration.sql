@@ -37,6 +37,8 @@ CREATE TABLE `ordens` (
     `andar` INTEGER NOT NULL,
     `sala` VARCHAR(191) NOT NULL,
     `solicitante_id` VARCHAR(191) NOT NULL,
+    `tratar_com` VARCHAR(191) NULL,
+    `telefone` VARCHAR(191) NOT NULL DEFAULT '',
     `data_solicitacao` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `tipo` INTEGER NOT NULL DEFAULT 0,
     `status` INTEGER NOT NULL DEFAULT 1,
@@ -51,8 +53,10 @@ CREATE TABLE `servicos` (
     `id` VARCHAR(191) NOT NULL,
     `tecnico_id` VARCHAR(191) NOT NULL,
     `data_inicio` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `data_fim` DATETIME(3) NULL,
+    `descricao` VARCHAR(191) NULL,
     `ordem_id` VARCHAR(191) NOT NULL,
-    `concluido_em` DATETIME(3) NULL,
+    `avaliado_em` DATETIME(3) NULL,
     `status` INTEGER NOT NULL DEFAULT 1,
     `observacao` VARCHAR(191) NULL,
 
@@ -64,6 +68,8 @@ CREATE TABLE `suspensoes` (
     `id` VARCHAR(191) NOT NULL,
     `servico_id` VARCHAR(191) NOT NULL,
     `motivo` VARCHAR(191) NOT NULL,
+    `inicio` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `termino` DATETIME(3) NULL,
     `status` BOOLEAN NOT NULL DEFAULT true,
 
     PRIMARY KEY (`id`)
@@ -79,12 +85,22 @@ CREATE TABLE `sugestao_materiais` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `servico_materiais` (
+CREATE TABLE `materiais` (
     `id` VARCHAR(191) NOT NULL,
     `nome` VARCHAR(191) NOT NULL,
-    `quantidade` INTEGER NOT NULL,
+    `quantidade` DOUBLE NOT NULL,
     `medida` VARCHAR(191) NOT NULL,
     `servico_id` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `categorias` (
+    `id` VARCHAR(191) NOT NULL,
+    `nome` VARCHAR(191) NOT NULL,
+    `categoria_id` VARCHAR(191) NOT NULL,
+    `nivel` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -108,4 +124,4 @@ ALTER TABLE `servicos` ADD CONSTRAINT `servicos_ordem_id_fkey` FOREIGN KEY (`ord
 ALTER TABLE `suspensoes` ADD CONSTRAINT `suspensoes_servico_id_fkey` FOREIGN KEY (`servico_id`) REFERENCES `servicos`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `servico_materiais` ADD CONSTRAINT `servico_materiais_servico_id_fkey` FOREIGN KEY (`servico_id`) REFERENCES `servicos`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `materiais` ADD CONSTRAINT `materiais_servico_id_fkey` FOREIGN KEY (`servico_id`) REFERENCES `servicos`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

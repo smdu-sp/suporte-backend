@@ -11,7 +11,7 @@ export class CreateOrdemDto {
     sala: string;
 
     @IsNumber({}, { message: 'Tipo inválido!' })
-    tipo: number;
+    tipo_id: string;
 
     @IsString({ message: 'É necessário descrever o problema a receber o serviço!' })
     observacoes: string;
@@ -24,4 +24,10 @@ export class CreateOrdemDto {
 
     @IsNumber({}, { message: 'Nivel de prioridade inválido!' })
     prioridade?: number;
+
+    @IsString({ message: 'Categoria inválida!' })
+    categoria_id: string;
+
+    @IsString({ message: 'Categoria inválida!' })
+    subcategoria_id: string;
 }

@@ -11,10 +11,12 @@ import { UnidadesModule } from './unidades/unidades.module';
 import { OrdensModule } from './ordens/ordens.module';
 import { SGUModule } from './sgu/sgu.module';
 import { ServicosModule } from './servicos/servicos.module';
+import { TiposModule } from './tipos/tipos.module';
+import { CategoriasModule } from './categorias/categorias.module';
 
 @Global()
 @Module({
-  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule],
+  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, TiposModule, CategoriasModule],
   exports: [AppService],
   controllers: [AppController],
   providers: [

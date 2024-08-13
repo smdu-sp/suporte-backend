@@ -63,7 +63,6 @@ export class ServicosService {
     if (!ordem) throw new ForbiddenException('Ordem de Serviço não encontrada.');
     const novoServico = await this.prisma.servico.create({
       data: {
-        tecnico_id,
         ordem_id
       }
     });
@@ -107,7 +106,7 @@ export class ServicosService {
   async finalizarServico(id: string, usuario: Usuario) {
     const servico = await this.prisma.servico.findUnique({ where: { id } });
     if (!servico) throw new ForbiddenException('Serviço não encontrado.');
-    if (servico.tecnico_id !== usuario.id) throw new ForbiddenException('Operação não autorizada para este usuário.');
+    // if (servico.tecnico_id !== usuario.id) throw new ForbiddenException('Operação não autorizada para este usuário.');
     const suspensaoAtiva = await this.prisma.suspensao.findFirst({ where: { servico_id: servico.id, status: true } });
     if (suspensaoAtiva) throw new ForbiddenException('Serviço possui suspensão ativa.');
     const finalizado = await this.prisma.servico.update({
@@ -140,7 +139,7 @@ export class ServicosService {
   }
 
   async adicionarSuspensao(id: string, { motivo }: AdicionarSuspensaoDto, usuario: Usuario) {
-    const servico = await this.prisma.servico.findUnique({ where: { id, tecnico_id: usuario.id } });
+    const servico = await this.prisma.servico.findUnique({ where: { id } });
     if (!servico) throw new ForbiddenException('Serviço não encontrado.');
     const suspensaoAtiva = await this.prisma.suspensao.findFirst({ where: { servico_id: id, status: true } });
     if (suspensaoAtiva) throw new ForbiddenException('Serviço possui suspensão ativa.');
@@ -171,7 +170,7 @@ export class ServicosService {
   }
 
   async retomarServico(id: string, usuario: Usuario) {
-    const servico = await this.prisma.servico.findUnique({ where: { id, tecnico_id: usuario.id } });
+    const servico = await this.prisma.servico.findUnique({ where: { id } });
     if (!servico) throw new ForbiddenException('Serviço não encontrado.');
     const suspensaoAtiva = await this.prisma.suspensao.findFirst({ where: { servico_id: id, status: true } });
     if (!suspensaoAtiva) throw new ForbiddenException('Serviço não possui suspensão ativa.');
@@ -202,7 +201,7 @@ export class ServicosService {
   async adicionarMaterial(servico_id: string, adicionarMaterialDto: AdicionarMaterialDto, usuario: Usuario) {
     const servico = await this.prisma.servico.findUnique({ where: { id: servico_id } });
     if (!servico) throw new ForbiddenException('Serviço não encontrado.');
-    if (servico.tecnico_id !== usuario.id) throw new ForbiddenException('Operação não autorizada para este usuário.');
+    // if (servico.tecnico_id !== usuario.id) throw new ForbiddenException('Operação não autorizada para este usuário.');
     const material = await this.prisma.material.create({
       data: {
         ...adicionarMaterialDto,
@@ -216,7 +215,7 @@ export class ServicosService {
   async removerMaterial(material_id: string, usuario: Usuario) {
     const material = await this.prisma.material.findUnique({ where: { id: material_id }, include: { servico: true } });
     if (!material) throw new ForbiddenException('Material não encontrado.');
-    if (material.servico.tecnico_id !== usuario.id) throw new ForbiddenException('Operação não autorizada para este usuário.');
+    // if (material.servico.tecnico_id !== usuario.id) throw new ForbiddenException('Operação não autorizada para este usuário.');
     const removido = await this.prisma.material.delete({ where: { id: material_id } });
     if (!removido) throw new InternalServerErrorException('Não foi possível remover o material. Tente novamente.');
     return { status: true };
