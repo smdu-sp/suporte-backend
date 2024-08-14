@@ -27,7 +27,7 @@ export class CategoriasService {
   }
 
   async criar(createCategoriaDto: CreateCategoriaDto) {
-    const { nome, status } = createCategoriaDto;
+    const { nome } = createCategoriaDto;
     if (await this.buscaPorNome(nome)) throw new ForbiddenException('Ja existe uma categoria com o mesmo nome');
     const novaCategoria = await this.prisma.categoria.create({
       data: createCategoriaDto
@@ -81,7 +81,7 @@ export class CategoriasService {
   }
 
   async atualizar(id: string, updateCategoriaDto: UpdateCategoriaDto) {
-    const { nome, status } = updateCategoriaDto;
+    const { nome } = updateCategoriaDto;
     const categoria = await this.prisma.categoria.findUnique({ where: { id } });
     if (!categoria) throw new ForbiddenException('Categoria não encontrado.');
     if (nome) {
