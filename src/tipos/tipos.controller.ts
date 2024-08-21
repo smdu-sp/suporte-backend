@@ -3,6 +3,7 @@ import { TiposService } from './tipos.service';
 import { CreateTipoDto } from './dto/create-tipo.dto';
 import { UpdateTipoDto } from './dto/update-tipo.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
+import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 
 @Controller('tipos')
 export class TiposController {
@@ -12,7 +13,7 @@ export class TiposController {
   criar(@Body() createTipoDto: CreateTipoDto) {
     return this.tiposService.criar(createTipoDto);
   }
-
+  
   @Get('buscar-tudo')
   buscarTudo(
     @Query('pagina') pagina?: string,
@@ -42,5 +43,11 @@ export class TiposController {
   @Delete('desativar/:id')
   desativar(@Param('id') id: string) {
     return this.tiposService.desativar(id);
+  }
+
+  @IsPublic()
+  @Get('motivo/:id')
+  buscaTipos(@Param('id') id: string) {
+    return this.tiposService.buscaTipos(id)
   }
 }

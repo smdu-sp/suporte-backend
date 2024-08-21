@@ -48,4 +48,6 @@ export class SubcategoriasController {
   desativar(@Param('id') id: string) {
     return this.subcategoriasService.desativar(id);
   }
+
+
 }
