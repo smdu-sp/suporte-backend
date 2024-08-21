@@ -102,4 +102,27 @@ export class TiposService {
       message: 'Tipo desativado com sucesso.'
     }
   }
+
+  async buscaTipos(id: string) {
+    const busca = await this.prisma.subcategoria.findUnique({ where: { id },
+      select: {
+        id: true,
+        nome: true,
+        categoria: {
+          select: {
+            id: true,
+            nome: true,
+            tipo: {
+              select: {
+                id: true,
+                nome: true
+              }
+            }
+          }
+        }
+      }
+    })
+    if (!busca) throw new ForbiddenException('Não foi possivel encontarar o tipo')  
+    return busca;
+  }
 }
