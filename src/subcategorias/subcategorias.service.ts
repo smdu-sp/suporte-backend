@@ -56,6 +56,9 @@ export class SubcategoriasService {
     [pagina, limite] = this.app.verificaLimite(pagina, limite, total);
     const subcategorias = await this.prisma.subcategoria.findMany({
       where: searchParams,
+      include: {
+        categoria: true
+      },
       orderBy: { nome: 'asc' },
       skip: (pagina - 1) * limite,
       take: limite,
