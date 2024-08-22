@@ -14,10 +14,11 @@ import { ServicosModule } from './servicos/servicos.module';
 import { TiposModule } from './tipos/tipos.module';
 import { CategoriasModule } from './categorias/categorias.module';
 import { SubcategoriasModule } from './subcategorias/subcategorias.module';
+import { AvisoModule } from './aviso/aviso.module';
 
 @Global()
 @Module({
-  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, TiposModule, CategoriasModule, SubcategoriasModule],
+  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, TiposModule, CategoriasModule, SubcategoriasModule, AvisoModule],
   exports: [AppService],
   controllers: [AppController],
   providers: [
