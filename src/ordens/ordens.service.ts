@@ -100,7 +100,16 @@ export class OrdensService {
       include: {
         unidade: true,
         solicitante: true,
-        servicos: true
+        servicos: true,
+        tipo: {
+          include: {
+            categorias: {
+              include: {
+                subcategorias: true
+              }
+            }
+          }
+        }
       }
     });
     return {
@@ -131,6 +140,4 @@ export class OrdensService {
     return { ...ordem, suspensaoAtiva: suspensaoAtiva ? true : false };
   }
 
-  // async desativar(id: string) {
-  // }
 }
