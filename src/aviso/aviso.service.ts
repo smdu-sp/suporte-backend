@@ -109,7 +109,7 @@ export class AvisoService {
     const removido = await this.prisma.aviso.delete({ 
       where: { id: id } 
     });
-    if (!removido) throw new InternalServerErrorException('Não foi possível remover o aviso.');
+    if (!removido) throw new ForbiddenException('Não foi possível remover o aviso.');
     return removido;
   }
 }
