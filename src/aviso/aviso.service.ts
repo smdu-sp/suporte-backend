@@ -13,7 +13,12 @@ export class AvisoService {
   ) {}
 
   async criar(createAvisoDto: CreateAvisoDto): Promise<Aviso> {
-    return await this.prisma.aviso.create({ data: createAvisoDto });
+    createAvisoDto.status = true;
+    const novo_aviso: Aviso = await this.prisma.aviso.create({ 
+      data: createAvisoDto 
+    });
+    if (!novo_aviso) throw new ForbiddenException('Erro ao criar aviso.');
+    return novo_aviso;
   }
 
   async buscarTudo(
@@ -21,7 +26,7 @@ export class AvisoService {
     limite: number = 10,
     status: string = 'all',
     busca?: string
-  ) {
+  ): Promise<{ total: number, pagina: number, limite: number, data: Aviso[] }> {
     [pagina, limite] = this.app.verificaPagina(pagina, limite);
     const searchParams = {
       ...(busca ? 
@@ -33,7 +38,7 @@ export class AvisoService {
       ...(status == 'all' ? {} : { status: status === 'true' }),
     };
     const total = await this.prisma.aviso.count({ where: searchParams });
-    if (total == 0) return { total: 0, pagina: 0, limite: 0, users: [] };
+    if (total == 0) return { total: 0, pagina: 0, limite: 0, data: [] };
     [pagina, limite] = this.app.verificaLimite(pagina, limite, total);
     const avisos = await this.prisma.aviso.findMany({
       include: { tipo: true },
@@ -62,10 +67,12 @@ export class AvisoService {
       where: { id: id }
     });
     if (!aviso) throw new ForbiddenException('Aviso não encontrado.');
-    return await this.prisma.aviso.update({
+    const aviso_atualizado: Aviso = await this.prisma.aviso.update({
       where: { id: id },
       data: updateAvisoDto
     });
+    if (!aviso_atualizado) throw new ForbiddenException('Erro ao atualizar o aviso.');
+    return aviso_atualizado;
   }
 
   async ativa(id: string): Promise<Aviso> {
@@ -73,10 +80,12 @@ export class AvisoService {
       where: { id: id }
     });
     if (!aviso) throw new ForbiddenException('Aviso não encontrado.');
-    return  await this.prisma.aviso.update({
+    const aviso_ativado: Aviso = await this.prisma.aviso.update({
       where: { id: id },
       data: { status: true }
     });
+    if (!aviso_ativado) throw new ForbiddenException('Erro ao ativar aviso');
+    return aviso_ativado;
   }
 
   async inativa(id: string): Promise<Aviso> {
@@ -84,10 +93,12 @@ export class AvisoService {
       where: { id: id }
     });
     if (!aviso) throw new ForbiddenException('Aviso não encontrado.');
-    return await this.prisma.aviso.update({
+    const aviso_inativado: Aviso = await this.prisma.aviso.update({
       where: { id: id },
       data: { status: false }
     });
+    if (!aviso_inativado) throw new ForbiddenException('Erro ao inativar aviso');
+    return aviso_inativado;
   }
 
   async remover(id: string): Promise<Aviso> {
@@ -98,7 +109,7 @@ export class AvisoService {
     const removido = await this.prisma.aviso.delete({ 
       where: { id: id } 
     });
-    if (!removido) throw new InternalServerErrorException('Não foi possível remover o aviso. Tente novamente.');
+    if (!removido) throw new InternalServerErrorException('Não foi possível remover o aviso.');
     return removido;
   }
 }
