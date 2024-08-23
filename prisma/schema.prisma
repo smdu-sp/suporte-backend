@@ -175,4 +175,6 @@ model Aviso {
   tipo_id     String
   
   tipo        Tipo    @relation(fields: [tipo_id], references: [id])
+
+  @@map("aviso")
 }
