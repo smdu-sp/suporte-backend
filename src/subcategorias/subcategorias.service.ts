@@ -47,6 +47,7 @@ export class SubcategoriasService {
       ...(busca ? 
         { OR: [
             { nome: { contains: busca } },
+            { categoria: { nome: { contains: busca } } }
         ] } : 
         {}),
       ...(status == 'all' ? {} : { status: status === 'true' }),

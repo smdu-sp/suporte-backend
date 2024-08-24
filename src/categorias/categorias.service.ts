@@ -47,6 +47,7 @@ export class CategoriasService {
       ...(busca ? 
         { OR: [
             { nome: { contains: busca } },
+            { tipo: { nome: { contains: busca } } },
         ] } : 
         {}),
       ...(status == 'all' ? {} : { status: status === 'true' }),

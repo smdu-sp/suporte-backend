@@ -5,6 +5,6 @@ export class CreateAvisoDto {
     mensagem: string;
     cor: CorModalAviso;
     rota: string;
-    status: boolean;
+    status?: boolean;
     tipo_id: string;
 }
