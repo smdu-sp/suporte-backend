@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreateAvisoDto } from './dto/create-aviso.dto';
 import { UpdateAvisoDto } from './dto/update-aviso.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -69,7 +69,12 @@ export class AvisoService {
     if (!aviso) throw new ForbiddenException('Aviso não encontrado.');
     const aviso_atualizado: Aviso = await this.prisma.aviso.update({
       where: { id: id },
-      data: updateAvisoDto
+      data: {
+        titulo: updateAvisoDto.titulo,
+        mensagem: updateAvisoDto.mensagem,
+        cor: updateAvisoDto.cor,
+        rota: updateAvisoDto.rota
+      }
     });
     if (!aviso_atualizado) throw new ForbiddenException('Erro ao atualizar o aviso.');
     return aviso_atualizado;
