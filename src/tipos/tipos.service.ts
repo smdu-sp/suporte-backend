@@ -19,6 +19,16 @@ export class TiposService {
     return lista;
   }
 
+  async listaIds() {
+    const lista = await this.prisma.tipo.findMany({
+      select: {
+        id: true
+      }
+    });
+    if (!lista || lista.length == 0) throw new ForbiddenException('Nenhum tipo encontrado.');
+    return lista;
+  }
+
   async buscaPorNome(nome: string) {
     const tipo = await this.prisma.tipo.findFirst({
       where: { nome }

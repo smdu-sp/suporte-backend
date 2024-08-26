@@ -26,13 +26,11 @@ export class AvisoController {
     return this.avisoService.buscarPorId(id);
   }
 
-  //@Permissoes('ADM')
   @Post('criar')
   async criar(@Body() createAvisoDto: CreateAvisoDto): Promise<Aviso> {
     return this.avisoService.criar(createAvisoDto);
   }
 
-  //@Permissoes('ADM')
   @Patch('atualizar/:id')
   async atualizar(
     @Param('id') id: string, 
@@ -51,7 +49,7 @@ export class AvisoController {
     return this.avisoService.inativa(id);
   }
 
-  //@Permissoes('ADM')
+  //
   @Delete('remover/:id')
   async remover(@Param('id') id: string): Promise<Aviso> {
     return this.avisoService.remover(id);

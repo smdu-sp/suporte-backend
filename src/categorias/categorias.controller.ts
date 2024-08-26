@@ -23,7 +23,7 @@ export class CategoriasController {
     return this.categoriasService.buscarTudo(+pagina, +limite, status, busca);
   }
 
-  @Permissoes('ADM', 'TEC', 'USR')
+  
   @Get('lista-completa')
   listaCompleta() {
     return this.categoriasService.listaCompleta();

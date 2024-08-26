@@ -24,7 +24,7 @@ export class TiposController {
     return this.tiposService.buscarTudo(+pagina, +limite, status, busca);
   }
 
-  @Permissoes('ADM', 'TEC', 'USR')
+  
   @Get('lista-completa')
   listaCompleta() {
     return this.tiposService.listaCompleta();

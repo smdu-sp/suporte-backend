@@ -28,10 +28,9 @@ export class OrdensService {
     return id;
   }
 
+  //permissao usuario
   async retornaPainel(usuario: Usuario) {
-    const abertos = usuario.permissao === 'USR' ? 
-      await this.prisma.ordem.count({ where: { AND: [{ OR: [{ status: 2 }, {status: 1}] }, { solicitante_id: usuario.id } ]}}) :
-      await this.prisma.ordem.count({ where: { status: 2 } });
+    const abertos = await this.prisma.ordem.count({ where: { status: 2 } });
     const naoAtribuidos = await this.prisma.ordem.count({ where: { status: 1 } });
     const concluidos = await this.prisma.ordem.count({ where: { status: 4 } });
     return { abertos, naoAtribuidos, concluidos };
@@ -87,7 +86,7 @@ export class OrdensService {
       ...(solicitante_id !== '' && { solicitante_id }),
       ...(sala !== '' && { sala }),
       ...(andar !== 0 && { sala }),
-      ...(usuario.permissao === 'USR' && { solicitante_id: usuario.id }),
+      //permissao usuario, filtrar chamados do usuario
     };
     const total = await this.prisma.ordem.count({ where: searchParams });
     if (total == 0) return { total: 0, pagina: 0, limite: 0, users: [] };

@@ -6,10 +6,12 @@ import { JwtService } from '@nestjs/jwt';
 import { UsuarioToken } from './models/UsuarioToken';
 import { Client, createClient } from 'ldapjs';
 import { UsuarioJwt } from './models/UsuarioJwt';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly prisma: PrismaService,
     private readonly usuariosService: UsuariosService,
     private readonly jwtService: JwtService,
   ) {}
@@ -25,8 +27,8 @@ export class AuthService {
   }
 
   async getTokens(usuario: UsuarioJwt) {
-    const { id, login, nome, email, permissao, status } = usuario;
-    const payload: UsuarioPayload = { sub: id, login, nome, email, permissao, status };
+    const { id, login, nome, email, status, dev } = usuario;
+    const payload: UsuarioPayload = { sub: id, login, nome, email, status, dev };
     const access_token = await this.jwtService.signAsync(payload, {
       expiresIn: '15m',
       secret: process.env.JWT_SECRET,
@@ -40,7 +42,15 @@ export class AuthService {
 
   async validateUser(login: string, senha: string) {
     let usuario = await this.usuariosService.buscarPorLogin(login);
-    if (!usuario) throw new UnauthorizedException('Usuário não encontrado.');
+    if (!usuario) {
+      const { nome, email, unidade_id } = await this.usuariosService.buscarNovo(login);
+      usuario = await this.usuariosService.criar({
+        login,
+        nome,
+        email,
+        unidade_id
+      })
+    }
     if (usuario && usuario.status !== 1)
       throw new UnauthorizedException('Usuário inativo.');
     if (process.env.ENVIRONMENT == 'local') {

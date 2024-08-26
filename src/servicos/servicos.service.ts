@@ -48,13 +48,13 @@ export class ServicosService {
     if (createServicoDto.tecnico_id) {
       const tecnico = await this.usuarios.buscarPorId(createServicoDto.tecnico_id);
       if (!tecnico) throw new ForbiddenException('Técnico não encontrado.');
-      if (tecnico.permissao !== 'TEC') throw new ForbiddenException('Operação não autorizada para este usuário.');
+      //permissao tecnico
       tecnico_id = tecnico.id;
     }
     if (!createServicoDto.tecnico_id || createServicoDto.tecnico_id === ''){
       const tecnico = await this.usuarios.buscarPorId(usuario.id);
       if (!tecnico) throw new ForbiddenException('Técnico não encontrado.');
-      if (tecnico.permissao !== 'TEC') throw new ForbiddenException('Operação não autorizada para este usuário.');
+      //permissao tecnico
       tecnico_id = tecnico.id;
     }
     if (!tecnico_id) throw new ForbiddenException('Técnico não informado.');
@@ -63,7 +63,10 @@ export class ServicosService {
     if (!ordem) throw new ForbiddenException('Ordem de Serviço não encontrada.');
     const novoServico = await this.prisma.servico.create({
       data: {
-        ordem_id
+        ordem_id,
+        tecnicos: {
+          connect: { id: tecnico_id }
+        }
       }
     });
     if (!novoServico) throw new InternalServerErrorException('Não foi possível criar o chamado. Tente novamente.');

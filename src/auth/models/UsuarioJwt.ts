@@ -3,6 +3,6 @@ export interface UsuarioJwt {
   login: string;
   nome: string;
   email: string;
-  permissao: string;
   status: number;
+  dev: boolean;
 }

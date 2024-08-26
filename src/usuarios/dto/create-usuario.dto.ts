@@ -1,11 +1,18 @@
 import { $Enums } from '@prisma/client';
 import {
+  IsArray,
+  IsBoolean,
   IsEmail,
   IsEnum,
   IsNumber,
   IsString,
   MinLength,
 } from 'class-validator';
+
+interface PermissaoSistema {
+  id: string;
+  permissao?: $Enums.Permissao;
+}
 
 export class CreateUsuarioDto {
   @MinLength(10, { message: 'Nome tem de ter ao menos 10 caracteres.' })
@@ -20,12 +27,15 @@ export class CreateUsuarioDto {
   @IsEmail({}, { message: 'Login tem de ter ao menos 7 caracteres.' })
   email: string;
 
-  @IsEnum($Enums.Permissao, { message: 'Escolha uma permissão válida.' })
-  permissao?: $Enums.Permissao;
+  @IsBoolean({ message: 'Valor inválido.' })
+  dev?: boolean;
 
   @IsNumber({}, { message: 'Status inválido!' })
   status?: number;
 
   @IsString({ message: 'Status inválido!' })
   unidade_id?: string;
+
+  @IsArray({ message: 'Selecione os sistemas!' })
+  sistemas?: PermissaoSistema[];
 }

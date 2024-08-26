@@ -23,7 +23,7 @@ export class SubcategoriasController {
     return this.subcategoriasService.buscarTudo(+pagina, +limite, status, busca);
   }
 
-  @Permissoes('ADM', 'TEC', 'USR')
+  
   @Get('lista-completa')
   listaCompleta() {
     return this.subcategoriasService.listaCompleta();

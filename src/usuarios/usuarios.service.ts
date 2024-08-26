@@ -12,6 +12,7 @@ import { $Enums, Usuario } from '@prisma/client';
 import { AppService } from 'src/app.service';
 import { SGUService } from 'src/sgu/sgu.service';
 import { Client, createClient } from 'ldapjs';
+import { connect } from 'http2';
 
 @Global()
 @Injectable()
@@ -21,11 +22,6 @@ export class UsuariosService {
     private prisma2: SGUService,
     private app: AppService,
   ) {}
-
-  async retornaPermissao(id: string) {
-    const usuario = await this.prisma.usuario.findUnique({ where: { id } });
-    return usuario.permissao;
-  }
 
   async listaCompleta() {
     const lista = await this.prisma.usuario.findMany({
@@ -42,34 +38,15 @@ export class UsuariosService {
     permissao: $Enums.Permissao,
     permissaoCriador: $Enums.Permissao,
   ) {
-    if (
-      permissao === $Enums.Permissao.DEV &&
-      permissaoCriador === $Enums.Permissao.ADM
-    )
-      permissao = $Enums.Permissao.ADM;
-    if (
-      (permissao === $Enums.Permissao.DEV ||
-        permissao === $Enums.Permissao.ADM) &&
-      permissaoCriador === $Enums.Permissao.TEC
-    )
-      permissao = $Enums.Permissao.TEC;
-    return permissao;
+    //validar permissao criador
   }
 
   async criar(createUsuarioDto: CreateUsuarioDto, criador?: Usuario) {
+    var { sistemas } = createUsuarioDto;
     const loguser = await this.buscarPorLogin(createUsuarioDto.login);
     if (loguser) throw new ForbiddenException('Login já cadastrado.');
     const emailuser = await this.buscarPorEmail(createUsuarioDto.email);
     if (emailuser) throw new ForbiddenException('Email já cadastrado.');
-    if (!criador) createUsuarioDto.permissao = 'USR';
-    if (criador) {
-      const permissaoCriador = await this.retornaPermissao(criador.id);
-      if (permissaoCriador !== $Enums.Permissao.DEV)
-        createUsuarioDto.permissao = this.validaPermissaoCriador(
-          createUsuarioDto.permissao,
-          permissaoCriador,
-        );
-    }
     var unidade_id = createUsuarioDto.unidade_id;
     if (!unidade_id){
       const usuario_sgu = await this.prisma2.tblUsuarios.findFirst({
@@ -83,10 +60,25 @@ export class UsuariosService {
         unidade_id = unidade ? unidade.id : '';
       }
     }
+    if (!sistemas || sistemas.length == 0) {
+      const sistemas_padrao = await this.prisma.tipo.findMany({
+        where: { padrao: true },
+      });
+      if (sistemas_padrao) 
+        sistemas = sistemas_padrao.map((t) => {
+          return { id: t.id };
+        });
+    }
     const usuario = await this.prisma.usuario.create({
-      data: { 
+      data: {
         ...createUsuarioDto,
         ...(unidade_id ? { unidade_id } : {}),
+        ...(sistemas && sistemas.length > 0 ? { unidade_tipo: {
+          connect: sistemas.map((sistema) => ({
+            id: sistema.id,
+            permissao: sistema.permissao
+          }))
+        }} : {}),
       }
     });
     if (!usuario)
@@ -102,7 +94,6 @@ export class UsuariosService {
     limite: number = 10,
     status: number = 1,
     busca?: string,
-    permissao?: string,
     unidade_id?: string,
   ) {
     [pagina, limite] = this.app.verificaPagina(pagina, limite);
@@ -113,8 +104,6 @@ export class UsuariosService {
         { email: { contains: busca } },
       ]}),
       ...(unidade_id !== '' && { unidade_id }),
-      ...(permissao !== '' && { permissao: $Enums.Permissao[permissao] }),
-      ...(usuario.permissao !== 'DEV' ? { status: 1 } : (status !== 4 && { status })),
     };
     const total = await this.prisma.usuario.count({ where: searchParams });
     if (total == 0) return { total: 0, pagina: 0, limite: 0, users: [] };
@@ -160,18 +149,11 @@ export class UsuariosService {
     updateUsuarioDto: UpdateUsuarioDto,
   ) {
     const usuarioLogado = await this.buscarPorId(usuario.id);
-    if (!usuarioLogado || ['TEC', 'USR'].includes(usuarioLogado.permissao) && id !== usuarioLogado.id)
-      throw new ForbiddenException('Operação não autorizada para este usuário.')
     if (updateUsuarioDto.login) {
       const usuario = await this.buscarPorLogin(updateUsuarioDto.login);
       if (usuario && usuario.id !== id)
         throw new ForbiddenException('Login já cadastrado.');
     }
-    if (updateUsuarioDto.permissao)
-      updateUsuarioDto.permissao = this.validaPermissaoCriador(
-        updateUsuarioDto.permissao,
-        usuarioLogado.permissao,
-      );
     const usuarioAtualizado = await this.prisma.usuario.update({
       data: updateUsuarioDto,
       where: { id },

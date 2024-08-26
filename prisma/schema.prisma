@@ -11,7 +11,6 @@ datasource db {
 }
 
 enum Permissao {
-  DEV
   ADM
   TEC
   USR
@@ -22,17 +21,17 @@ model Usuario {
   nome          String
   login         String    @unique
   email         String    @unique
-  permissao     Permissao @default(USR)
   status        Int       @default(1)
+  dev           Boolean   @default(false)
 
-  ultimologin   DateTime @default(now())
-  criadoEm      DateTime @default(now())
-  atualizadoEm  DateTime @default(now()) @updatedAt
+  ultimologin   DateTime  @default(now())
+  criadoEm      DateTime  @default(now())
+  atualizadoEm  DateTime  @default(now()) @updatedAt
 
   ordens        Ordem[]
   servicos      Servico[]
   usuario_tipo  Usuario_Tipo[]
-  unidade       Unidade? @relation(fields: [unidade_id], references: [id])
+  unidade       Unidade?  @relation(fields: [unidade_id], references: [id])
   unidade_id    String?
 
   @@map("usuarios")
@@ -42,7 +41,7 @@ model Usuario_Tipo {
   id            String      @id @default(uuid())
   id_usuario    String      
   id_tipo       String
-  permissao     Permissao   @default(USR)  
+  permissao     Permissao   @default(USR)
 
   usuario       Usuario @relation(fields: [id_usuario], references: [id])
   tipo          Tipo    @relation(fields: [id_tipo], references: [id])
@@ -139,6 +138,7 @@ model Material {
 model Tipo {
   id           String @id @default(uuid())
   nome         String @unique
+  padrao       Boolean @default(false)
   categorias   Categoria[]
   ordens       Ordem[]
   avisos       Aviso[]

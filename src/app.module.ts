@@ -27,11 +27,7 @@ import { UsuarioTipoModule } from './usuario_tipo/usuario_tipo.module';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RoleGuard,
-    },
+    }
   ],
 })
 export class AppModule {}

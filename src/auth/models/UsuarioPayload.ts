@@ -3,7 +3,7 @@ export interface UsuarioPayload {
   login: string;
   email: string;
   nome: string;
-  permissao: string;
+  dev: boolean;
   status: number;
   iat?: number;
   exp?: number;
