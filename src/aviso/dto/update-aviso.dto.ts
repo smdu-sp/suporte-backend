@@ -8,5 +8,5 @@ export class UpdateAvisoDto extends PartialType(CreateAvisoDto) {
     cor: CorModalAviso;
     rota: string;
     status?: boolean;
-    tipo_id: string;
+    tipo_id?: string;
 }
