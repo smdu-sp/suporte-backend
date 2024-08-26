@@ -41,10 +41,10 @@ export class AvisoService {
     if (total == 0) return { total: 0, pagina: 0, limite: 0, data: [] };
     [pagina, limite] = this.app.verificaLimite(pagina, limite, total);
     const avisos = await this.prisma.aviso.findMany({
-      include: { tipo: true },
       where: searchParams,
       skip: (pagina - 1) * limite,
       take: limite,
+      include: { tipo: true }
     });
     return {
       total: +total,
