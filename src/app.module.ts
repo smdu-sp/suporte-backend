@@ -15,10 +15,11 @@ import { TiposModule } from './tipos/tipos.module';
 import { CategoriasModule } from './categorias/categorias.module';
 import { SubcategoriasModule } from './subcategorias/subcategorias.module';
 import { AvisoModule } from './aviso/aviso.module';
+import { UsuarioTipoModule } from './usuario_tipo/usuario_tipo.module';
 
 @Global()
 @Module({
-  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, TiposModule, CategoriasModule, SubcategoriasModule, AvisoModule],
+  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, TiposModule, CategoriasModule, SubcategoriasModule, AvisoModule, UsuarioTipoModule],
   exports: [AppService],
   controllers: [AppController],
   providers: [

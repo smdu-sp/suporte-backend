@@ -31,10 +31,23 @@ model Usuario {
 
   ordens        Ordem[]
   servicos      Servico[]
+  usuario_tipo  Usuario_Tipo[]
   unidade       Unidade? @relation(fields: [unidade_id], references: [id])
   unidade_id    String?
 
   @@map("usuarios")
+}
+
+model Usuario_Tipo {
+  id            String      @id @default(uuid())
+  id_usuario    String      
+  id_tipo       String
+  permissao     Permissao   @default(USR)  
+
+  usuario       Usuario @relation(fields: [id_usuario], references: [id])
+  tipo          Tipo    @relation(fields: [id_tipo], references: [id])
+
+  @@map("usuario_tipo")
 }
 
 model Unidade {
@@ -129,6 +142,7 @@ model Tipo {
   categorias   Categoria[]
   ordens       Ordem[]
   avisos       Aviso[]
+  usuario_tipo Usuario_Tipo[]
   status       Boolean @default(true)
 
   @@map("tipos")
