@@ -9,9 +9,8 @@ export class RoleGuard implements CanActivate {
     private readonly usuariosService: UsuariosService,
   ) {}
 
-  verificaPermissoes(permissoes: string[], permissaoUsuario: string) {
-    if (permissaoUsuario === 'DEV') return true;
-    return permissoes.some((role) => role === permissaoUsuario);
+  verificaPermissoes(permissoes: string[], permissoesUsuario: string[]) {
+    return permissoes.some((role) => permissoesUsuario.includes(role));
   }
 
   async canActivate(context: ExecutionContext) {
@@ -21,7 +20,10 @@ export class RoleGuard implements CanActivate {
     );
     if (!permissoes) return true;
     const request = context.switchToHttp().getRequest();
-    const usuario = request.user;
-    return true;
+    const { user: { id } } = request;
+    const usuario = await this.usuariosService.buscarPorId(id);
+    if (usuario.dev) return true;
+    const permissoesUsuario = await this.usuariosService.permissoes(usuario);
+    return this.verificaPermissoes(permissoes, permissoesUsuario);
   }
 }

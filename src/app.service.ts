@@ -60,4 +60,8 @@ export class AppService {
     }
   }
 
+  async permissoes(){
+    
+  }
+
 }

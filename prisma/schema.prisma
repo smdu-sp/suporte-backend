@@ -38,14 +38,14 @@ model Usuario {
 }
 
 model Usuario_Tipo {
-  id            String      @id @default(uuid())
-  id_usuario    String      
-  id_tipo       String
+  usuario_id    String      
+  tipo_id       String
   permissao     Permissao   @default(USR)
 
-  usuario       Usuario @relation(fields: [id_usuario], references: [id])
-  tipo          Tipo    @relation(fields: [id_tipo], references: [id])
+  usuario       Usuario @relation(fields: [usuario_id], references: [id])
+  tipo          Tipo    @relation(fields: [tipo_id], references: [id])
 
+  @@id([usuario_id, tipo_id])
   @@map("usuario_tipo")
 }
 

@@ -9,13 +9,13 @@ import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 export class UnidadesController {
   constructor(private readonly unidadesService: UnidadesService) {}
 
-  
+  @Permissoes('ADM')
   @Post('criar')
   criar(@Body() createUnidadeDto: CreateUnidadeDto) {
     return this.unidadesService.criar(createUnidadeDto);
   }
 
-  
+  @Permissoes('ADM')
   @Get('buscar-tudo')
   buscarTudo(
     @Query('pagina') pagina?: string,
@@ -26,25 +26,24 @@ export class UnidadesController {
     return this.unidadesService.buscarTudo(+pagina, +limite, status, busca);
   }
 
-  
   @Get('lista-completa')
   listaCompleta() {
     return this.unidadesService.listaCompleta();
   }
 
-  
+  @Permissoes('ADM')
   @Get('buscar-por-id/:id')
   buscarPorId(@Param('id') id: string) {
     return this.unidadesService.buscarPorId(id);
   }
 
-  
+  @Permissoes('ADM')
   @Patch('atualizar/:id')
   atualizar(@Param('id') id: string, @Body() updateUnidadeDto: UpdateUnidadeDto) {
     return this.unidadesService.atualizar(id, updateUnidadeDto);
   }
 
-  
+  @Permissoes('ADM')
   @Delete('desativar/:id')
   desativar(@Param('id') id: string) {
     return this.unidadesService.desativar(id);

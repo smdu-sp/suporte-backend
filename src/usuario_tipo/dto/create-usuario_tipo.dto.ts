@@ -1,7 +1,7 @@
 import { Permissao } from "@prisma/client";
 
 export interface CreateUsuarioTipoDto {
-    id_usuario: string,
-    id_tipo: string,
+    usuario_id: string,
+    tipo_id: string,
     permissao?: Permissao
 }

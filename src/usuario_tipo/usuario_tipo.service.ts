@@ -28,9 +28,9 @@ export class UsuarioTipoService {
   //   return `This action updates a #${id} usuarioTipo`;
   // }
 
-  async remove(id: string) {
-    return await this.prisma.usuario_Tipo.delete({
-      where: { id: id }
-    });
-  }
+  // async remove(id: string) {
+  //   return await this.prisma.usuario_Tipo.delete({
+  //     where: { id: id }
+  //   });
+  // }
 }

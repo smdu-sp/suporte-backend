@@ -39,8 +39,8 @@ export class UsuarioTipoController {
   //   return this.usuarioTipoService.update(+id, updateUsuarioTipoDto);
   // }
 
-  @Delete('remover/:id')
-  async remove(@Param('id') id: string): Promise<UsuarioTipo> {
-    return await this.usuarioTipoService.remove(id);
-  }
+  // @Delete('remover/:id')
+  // async remove(@Param('id') id: string): Promise<UsuarioTipo> {
+  //   return await this.usuarioTipoService.remove(id);
+  // }
 }

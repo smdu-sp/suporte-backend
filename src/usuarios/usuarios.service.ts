@@ -41,6 +41,16 @@ export class UsuariosService {
     //validar permissao criador
   }
 
+  async permissoes(usuario: Usuario) {
+    const permissoes = await this.prisma.usuario_Tipo.findMany({
+      where: { usuario_id: usuario.id },
+      select: { permissao: true },
+      distinct: ['permissao'],
+    });
+    if (!permissoes || permissoes.length === 0) return [];
+    return permissoes.map((p) => p.permissao);
+  }
+
   async criar(createUsuarioDto: CreateUsuarioDto, criador?: Usuario) {
     var { sistemas } = createUsuarioDto;
     const loguser = await this.buscarPorLogin(createUsuarioDto.login);
