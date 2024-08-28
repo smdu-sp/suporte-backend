@@ -17,36 +17,36 @@ enum Permissao {
 }
 
 model Usuario {
-  id            String    @id @default(uuid())
-  nome          String
-  login         String    @unique
-  email         String    @unique
-  status        Int       @default(1)
-  dev           Boolean   @default(false)
+  id                String    @id @default(uuid())
+  nome              String
+  login             String    @unique
+  email             String    @unique
+  status            Int       @default(1)
+  dev               Boolean   @default(false)
 
-  ultimologin   DateTime  @default(now())
-  criadoEm      DateTime  @default(now())
-  atualizadoEm  DateTime  @default(now()) @updatedAt
+  ultimologin       DateTime  @default(now())
+  criadoEm          DateTime  @default(now())
+  atualizadoEm      DateTime  @default(now()) @updatedAt
 
-  ordens        Ordem[]
-  servicos      Servico[]
-  usuario_tipo  Usuario_Tipo[]
-  unidade       Unidade?  @relation(fields: [unidade_id], references: [id])
-  unidade_id    String?
+  ordens            Ordem[]
+  servicos          Servico[]
+  usuario_sistema   Usuario_Sistema[]
+  unidade           Unidade?  @relation(fields: [unidade_id], references: [id])
+  unidade_id        String?
 
   @@map("usuarios")
 }
 
-model Usuario_Tipo {
+model Usuario_Sistema {
   usuario_id    String      
-  tipo_id       String
+  sistema_id    String
   permissao     Permissao   @default(USR)
 
-  usuario       Usuario @relation(fields: [usuario_id], references: [id])
-  tipo          Tipo    @relation(fields: [tipo_id], references: [id])
+  usuario       Usuario     @relation(fields: [usuario_id], references: [id])
+  sistema       Sistema     @relation(fields: [sistema_id], references: [id])
 
-  @@id([usuario_id, tipo_id])
-  @@map("usuario_tipo")
+  @@id([usuario_id, sistema_id])
+  @@map("usuario_sistema")
 }
 
 model Unidade {
@@ -77,8 +77,8 @@ model Ordem { //ordem de serviço
   prioridade       Int          @default(1)
   observacoes      String
   servicos         Servico[]
-  tipo_id          String
-  tipo             Tipo         @relation(fields: [tipo_id], references: [id])
+  sistema_id       String
+  sistema          Sistema      @relation(fields: [sistema_id], references: [id])
   categoria_id     String
   categoria        Categoria    @relation(fields: [categoria_id], references: [id])
   subcategoria_id  String
@@ -135,24 +135,24 @@ model Material {
   @@map("materiais")
 }
 
-model Tipo {
-  id           String @id @default(uuid())
-  nome         String @unique
-  padrao       Boolean @default(false)
-  categorias   Categoria[]
-  ordens       Ordem[]
-  avisos       Aviso[]
-  usuario_tipo Usuario_Tipo[]
-  status       Boolean @default(true)
+model Sistema {
+  id                String @id @default(uuid())
+  nome              String @unique
+  padrao            Boolean @default(false)
+  categorias        Categoria[]
+  ordens            Ordem[]
+  avisos            Aviso[]
+  usuario_sistema   Usuario_Sistema[]
+  status            Boolean @default(true)
 
-  @@map("tipos")
+  @@map("sistema")
 }
 
 model Categoria {
   id            String  @id @default(uuid())
   nome          String  @unique
-  tipo_id       String
-  tipo          Tipo    @relation(fields: [tipo_id], references: [id])
+  sistema_id    String
+  sistema       Sistema @relation(fields: [sistema_id], references: [id])
   subcategorias Subcategoria[]
   ordens        Ordem[]
   status        Boolean @default(true)
@@ -186,9 +186,9 @@ model Aviso {
   cor         CorModalAviso @default(NEUTRAL)
   rota        String
   status      Boolean @default(false)
-  tipo_id     String
+  sistema_id     String
   
-  tipo        Tipo    @relation(fields: [tipo_id], references: [id])
+  sistema     Sistema @relation(fields: [sistema_id], references: [id])
 
   @@map("aviso")
 }

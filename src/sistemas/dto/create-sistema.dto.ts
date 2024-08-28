@@ -1,5 +1,4 @@
-export class CreateTipoDto {
+export class CreateSistemaDto {
     nome: string
     status?: boolean
 }
-  

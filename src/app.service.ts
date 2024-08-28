@@ -46,6 +46,7 @@ export class AppService {
     assunto: string,
     corpo: string,
     destinatarios: string[],
+    sistema: string = 'SMUL'
   ) {
     try {
       const enviado = await this.envio.sendMail({
