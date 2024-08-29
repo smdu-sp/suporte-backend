@@ -136,5 +136,4 @@ export class OrdensService {
     if (!ordem) throw new ForbiddenException('Ordem não encontrada');
     return { ...ordem, suspensaoAtiva: suspensaoAtiva ? true : false };
   }
-
 }
