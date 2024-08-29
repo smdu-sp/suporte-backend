@@ -4,5 +4,7 @@ export class CreateSistemaDto {
     @ApiProperty()
     nome: string;
     @ApiProperty()
-    status?: boolean
+    padrao: boolean
+    @ApiProperty()
+    status: boolean
 }
