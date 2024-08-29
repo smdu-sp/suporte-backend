@@ -1,11 +1,13 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Global } from '@nestjs/common';
 import { OrdensService } from './ordens.service';
 import { CreateOrdemDto } from './dto/create-ordem.dto';
-import { UpdateOrdemDto } from './dto/update-ordem.dto';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @Global()
+@ApiBearerAuth()
+@ApiTags('ordens')
 @Controller('ordens')
 export class OrdensController {
   constructor(private readonly ordensService: OrdensService) {}
@@ -36,7 +38,7 @@ export class OrdensController {
   }
 
   @Patch('atualizar/:id')
-  atualizar(@Param('id') id: string, @Body() updateOrdemDto: UpdateOrdemDto) {
+  atualizar(@Param('id') id: string, @Body() updateOrdemDto: CreateOrdemDto) {
     return this.ordensService.atualizar(id, updateOrdemDto);
   }
 

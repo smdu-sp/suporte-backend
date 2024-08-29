@@ -10,11 +10,15 @@ import {
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('usuarios')
+@ApiResponse({ status: 201, description: 'Created.'})
+@ApiResponse({ status: 401, description: 'Forbidden.'})
 @Controller('usuarios') //localhost:3000/usuarios
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
@@ -52,7 +56,7 @@ export class UsuariosController {
   atualizar(
     @UsuarioAtual() usuario: Usuario,
     @Param('id') id: string,
-    @Body() updateUsuarioDto: UpdateUsuarioDto,
+    @Body() updateUsuarioDto: CreateUsuarioDto,
   ) {
     return this.usuariosService.atualizar(usuario, id, updateUsuarioDto);
   }

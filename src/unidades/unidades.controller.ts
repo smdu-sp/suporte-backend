@@ -1,10 +1,11 @@
-import { IsPublic } from './../auth/decorators/is-public.decorator';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UnidadesService } from './unidades.service';
 import { CreateUnidadeDto } from './dto/create-unidade.dto';
-import { UpdateUnidadeDto } from './dto/update-unidade.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('unidades')
 @Controller('unidades')
 export class UnidadesController {
   constructor(private readonly unidadesService: UnidadesService) {}
@@ -39,7 +40,7 @@ export class UnidadesController {
 
   @Permissoes('ADM')
   @Patch('atualizar/:id')
-  atualizar(@Param('id') id: string, @Body() updateUnidadeDto: UpdateUnidadeDto) {
+  atualizar(@Param('id') id: string, @Body() updateUnidadeDto: CreateUnidadeDto) {
     return this.unidadesService.atualizar(id, updateUnidadeDto);
   }
 

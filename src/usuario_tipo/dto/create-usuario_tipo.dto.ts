@@ -1,7 +1,11 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { Permissao } from "@prisma/client";
 
-export interface CreateUsuarioTipoDto {
-    usuario_id: string,
-    tipo_id: string,
+export class CreateUsuarioTipoDto {
+    @ApiProperty()
+    usuario_id: string;
+    @ApiProperty()
+    tipo_id: string;
+    @ApiProperty()
     permissao?: Permissao
 }

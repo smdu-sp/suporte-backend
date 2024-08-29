@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { $Enums, Usuario } from '@prisma/client';
 import { AppService } from 'src/app.service';
@@ -156,7 +155,7 @@ export class UsuariosService {
   async atualizar(
     usuario: Usuario,
     id: string,
-    updateUsuarioDto: UpdateUsuarioDto,
+    updateUsuarioDto: CreateUsuarioDto,
   ) {
     const usuarioLogado = await this.buscarPorId(usuario.id);
     if (updateUsuarioDto.login) {

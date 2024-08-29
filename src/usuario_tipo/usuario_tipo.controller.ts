@@ -4,7 +4,10 @@ import { CreateUsuarioTipoDto } from './dto/create-usuario_tipo.dto';
 import { UpdateUsuarioTipoDto } from './dto/update-usuario_tipo.dto';
 import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 import { UsuarioTipo } from './entities/usuario_tipo.entity';
+import { ApiBearerAuth, ApiProperty, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('usuario_tipo')
 @Controller('usuario-tipo')
 export class UsuarioTipoController {
   constructor(

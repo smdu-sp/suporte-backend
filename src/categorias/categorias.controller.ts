@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CategoriasService } from './categorias.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
-import { UpdateCategoriaDto } from './dto/update-categoria.dto';
-import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('categorias')
 @Controller('categorias')
 export class CategoriasController {
   constructor(private readonly categoriasService: CategoriasService) {}
@@ -23,7 +24,6 @@ export class CategoriasController {
     return this.categoriasService.buscarTudo(+pagina, +limite, status, busca);
   }
 
-  
   @Get('lista-completa')
   listaCompleta() {
     return this.categoriasService.listaCompleta();
@@ -40,7 +40,7 @@ export class CategoriasController {
   }
 
   @Patch('atualizar/:id')
-  atualizar(@Param('id') id: string, @Body() updateCategoriaDto: UpdateCategoriaDto) {
+  atualizar(@Param('id') id: string, @Body() updateCategoriaDto: CreateCategoriaDto) {
     return this.categoriasService.atualizar(id, updateCategoriaDto);
   }
 

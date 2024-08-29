@@ -1,6 +1,5 @@
 import { ForbiddenException, Global, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateOrdemDto } from './dto/create-ordem.dto';
-import { UpdateOrdemDto } from './dto/update-ordem.dto';
 import { AppService } from 'src/app.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Usuario } from '@prisma/client';
@@ -36,7 +35,7 @@ export class OrdensService {
     return { abertos, naoAtribuidos, concluidos };
   }
 
-  async atualizar(id: string, updateOrdemDto: UpdateOrdemDto) {
+  async atualizar(id: string, updateOrdemDto: CreateOrdemDto) {
     const ordem = await this.prisma.ordem.findUnique({ where: { id } });
     if (!ordem) throw new ForbiddenException('Ordem não encontrada');
     const updatedOrdem = await this.prisma.ordem.update({

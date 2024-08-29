@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
-import { UpdateCategoriaDto } from './dto/update-categoria.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppService } from 'src/app.service';
 
@@ -84,7 +83,7 @@ export class CategoriasService {
     return categorias;
   }
 
-  async atualizar(id: string, updateCategoriaDto: UpdateCategoriaDto) {
+  async atualizar(id: string, updateCategoriaDto: CreateCategoriaDto) {
     const { nome } = updateCategoriaDto;
     const categoria = await this.prisma.categoria.findUnique({ where: { id } });
     if (!categoria) throw new ForbiddenException('Categoria não encontrado.');

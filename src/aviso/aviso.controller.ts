@@ -5,12 +5,18 @@ import { UpdateAvisoDto } from './dto/update-aviso.dto';
 import { Aviso } from './entities/aviso.entity';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { IsPublic } from 'src/auth/decorators/is-public.decorator';
+import { ApiBearerAuth, ApiPropertyOptional, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('avisos')
 @Controller('avisos')
 export class AvisoController {
   constructor(private readonly avisoService: AvisoService) {}
 
-  @IsPublic()
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
   @Get('')
   buscarTudo(
     @Query('pagina') pagina?: string,

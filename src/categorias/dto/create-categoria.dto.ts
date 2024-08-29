@@ -1,5 +1,10 @@
+import { ApiProperty } from "@nestjs/swagger"
+
 export class CreateCategoriaDto {
-    nome: string
-    tipo_id: string
-    status?: boolean
+    @ApiProperty()
+    nome: string;
+    @ApiProperty()
+    tipo_id: string;
+    @ApiProperty()
+    status?: boolean;
 }

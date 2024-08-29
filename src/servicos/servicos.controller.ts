@@ -1,14 +1,15 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Put, Request } from '@nestjs/common';
 import { ServicosService } from './servicos.service';
 import { CreateServicoDto } from './dto/create-servico.dto';
-import { UpdateServicoDto } from './dto/update-servico.dto';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
 import { AvaliarServicoDto } from './dto/avaliar-servico-dto';
-import { Request as Req } from 'express';
 import { AdicionarSuspensaoDto } from './dto/adicionar-suspensao-dto';
 import { AdicionarMaterialDto } from './dto/adicionar-material-dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('serviços')
 @Controller('servicos')
 export class ServicosController {
   constructor(private readonly servicosService: ServicosService) {}
@@ -29,7 +30,7 @@ export class ServicosController {
   }
 
   @Patch('atualizar/:id')
-  atualizar(@Param('id') id: string, @Body() updateServicoDto: UpdateServicoDto) {
+  atualizar(@Param('id') id: string, @Body() updateServicoDto: CreateServicoDto) {
     return this.servicosService.atualizar(id, updateServicoDto);
   }
 
