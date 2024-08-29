@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { SubcategoriasService } from './subcategorias.service';
 import { CreateSubcategoriaDto } from './dto/create-subcategoria.dto';
-import { UpdateSubcategoriaDto } from './dto/update-subcategoria.dto';
-import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('subcategorias')
 @Controller('subcategorias')
 export class SubcategoriasController {
   constructor(private readonly subcategoriasService: SubcategoriasService) {}
@@ -13,6 +14,10 @@ export class SubcategoriasController {
     return this.subcategoriasService.criar(createSubcategoriaDto);
   }
 
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
   @Get('buscar-tudo')
   buscarTudo(
     @Query('pagina') pagina?: string,
@@ -22,7 +27,6 @@ export class SubcategoriasController {
   ) {
     return this.subcategoriasService.buscarTudo(+pagina, +limite, status, busca);
   }
-
   
   @Get('lista-completa')
   listaCompleta() {
@@ -40,7 +44,7 @@ export class SubcategoriasController {
   }
 
   @Patch('atualizar/:id')
-  atualizar(@Param('id') id: string, @Body() updateSubcategoriaDto: UpdateSubcategoriaDto) {
+  atualizar(@Param('id') id: string, @Body() updateSubcategoriaDto: CreateSubcategoriaDto) {
     return this.subcategoriasService.atualizar(id, updateSubcategoriaDto);
   }
 
@@ -48,6 +52,4 @@ export class SubcategoriasController {
   desativar(@Param('id') id: string) {
     return this.subcategoriasService.desativar(id);
   }
-
-
 }

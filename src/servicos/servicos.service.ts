@@ -1,7 +1,6 @@
 import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateServicoDto } from './dto/create-servico.dto';
-import { UpdateServicoDto } from './dto/update-servico.dto';
-import { Servico, Usuario } from '@prisma/client';
+import { Usuario } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppService } from 'src/app.service';
 import { UsuariosService } from 'src/usuarios/usuarios.service';
@@ -94,7 +93,7 @@ export class ServicosService {
   async buscarPorId(id: string) {
   }
 
-  async atualizar(id: string, updateServicoDto: UpdateServicoDto) {
+  async atualizar(id: string, updateServicoDto: CreateServicoDto) {
     const { descricao } = updateServicoDto;
     const servico = await this.prisma.servico.findUnique({ where: { id } });
     if (!servico) throw new ForbiddenException('Serviço não encontrado.');

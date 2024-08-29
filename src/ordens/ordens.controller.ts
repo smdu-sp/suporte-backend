@@ -1,20 +1,34 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Global } from '@nestjs/common';
 import { OrdensService } from './ordens.service';
 import { CreateOrdemDto } from './dto/create-ordem.dto';
-import { UpdateOrdemDto } from './dto/update-ordem.dto';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @Global()
+@ApiBearerAuth()
+@ApiTags('ordens')
 @Controller('ordens')
 export class OrdensController {
   constructor(private readonly ordensService: OrdensService) {}
 
   @Post('criar')
-  criar(@Body() createOrdenDto: CreateOrdemDto, @UsuarioAtual() usuario: Usuario) {
+  criar(
+    @Body() createOrdenDto: CreateOrdemDto, 
+    @UsuarioAtual() usuario: Usuario
+  ) {
     return this.ordensService.criar(createOrdenDto, usuario);
   }
 
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
+  @ApiQuery({ name: 'unidade_id', type: 'string', required: false })
+  @ApiQuery({ name: 'solicitante_id', type: 'string', required: false })
+  @ApiQuery({ name: 'andar', type: 'string', required: false })
+  @ApiQuery({ name: 'sala', type: 'string', required: false })
+  @ApiQuery({ name: 'tipo', type: 'string', required: false })
   @Get('buscar-tudo')
   buscarTudo(
     @UsuarioAtual() usuario: Usuario,
@@ -35,7 +49,7 @@ export class OrdensController {
   }
 
   @Patch('atualizar/:id')
-  atualizar(@Param('id') id: string, @Body() updateOrdemDto: UpdateOrdemDto) {
+  atualizar(@Param('id') id: string, @Body() updateOrdemDto: CreateOrdemDto) {
     return this.ordensService.atualizar(id, updateOrdemDto);
   }
 

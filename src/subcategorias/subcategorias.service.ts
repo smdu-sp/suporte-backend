@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateSubcategoriaDto } from './dto/create-subcategoria.dto';
-import { UpdateSubcategoriaDto } from './dto/update-subcategoria.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppService } from 'src/app.service';
 
@@ -84,7 +83,7 @@ export class SubcategoriasService {
     return subcategorias;
   }
 
-  async atualizar(id: string, updateSubcategoriaDto: UpdateSubcategoriaDto) {
+  async atualizar(id: string, updateSubcategoriaDto: CreateSubcategoriaDto) {
     const { nome } = updateSubcategoriaDto;
     const subcategoria = await this.prisma.subcategoria.findUnique({ where: { id } });
     if (!subcategoria) throw new ForbiddenException('Subcategoria não encontrada.');
@@ -112,6 +111,4 @@ export class SubcategoriasService {
       message: 'Categoria desativada com sucesso.'
     }
   }
-
-
 }

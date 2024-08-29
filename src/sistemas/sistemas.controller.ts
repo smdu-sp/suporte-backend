@@ -3,16 +3,25 @@ import { SistemasService } from './sistemas.service';
 import { CreateSistemaDto } from './dto/create-sistema.dto';
 import { UpdateSistemaDto } from './dto/update-sistema.dto';
 import { IsPublic } from 'src/auth/decorators/is-public.decorator';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('sistemas')
 @Controller('sistemas')
 export class SistemasController {
-  constructor(private readonly sistemasService: SistemasService) {}
+  constructor(
+    private readonly sistemasService: SistemasService
+  ) {}
 
   @Post('criar')
   criar(@Body() createSistemaDto: CreateSistemaDto) {
     return this.sistemasService.criar(createSistemaDto);
   }
   
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
   @Get('buscar-tudo')
   buscarTudo(
     @Query('pagina') pagina?: string,
@@ -23,7 +32,6 @@ export class SistemasController {
     return this.sistemasService.buscarTudo(+pagina, +limite, status, busca);
   }
 
-  
   @Get('lista-completa')
   listaCompleta() {
     return this.sistemasService.listaCompleta();

@@ -1,6 +1,5 @@
 import { ForbiddenException, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { CreateUnidadeDto } from './dto/create-unidade.dto';
-import { UpdateUnidadeDto } from './dto/update-unidade.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AppService } from 'src/app.service';
 // import { Connection } from 'oracledb';
@@ -92,7 +91,7 @@ export class UnidadesService {
     return unidade;
   }
 
-  async atualizar(id: string, updateUnidadeDto: UpdateUnidadeDto) {
+  async atualizar(id: string, updateUnidadeDto: CreateUnidadeDto) {
     const { nome, sigla, codigo } = updateUnidadeDto;
     const unidade = await this.prisma.unidade.findUnique({ where: { id } });
     if (!unidade) throw new ForbiddenException('Unidade não encontrada.');

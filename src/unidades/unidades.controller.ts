@@ -1,10 +1,11 @@
-import { IsPublic } from './../auth/decorators/is-public.decorator';
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { UnidadesService } from './unidades.service';
 import { CreateUnidadeDto } from './dto/create-unidade.dto';
-import { UpdateUnidadeDto } from './dto/update-unidade.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('unidades')
 @Controller('unidades')
 export class UnidadesController {
   constructor(private readonly unidadesService: UnidadesService) {}
@@ -15,6 +16,10 @@ export class UnidadesController {
     return this.unidadesService.criar(createUnidadeDto);
   }
 
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
   @Permissoes('ADM')
   @Get('buscar-tudo')
   buscarTudo(
@@ -39,7 +44,7 @@ export class UnidadesController {
 
   @Permissoes('ADM')
   @Patch('atualizar/:id')
-  atualizar(@Param('id') id: string, @Body() updateUnidadeDto: UpdateUnidadeDto) {
+  atualizar(@Param('id') id: string, @Body() updateUnidadeDto: CreateUnidadeDto) {
     return this.unidadesService.atualizar(id, updateUnidadeDto);
   }
 

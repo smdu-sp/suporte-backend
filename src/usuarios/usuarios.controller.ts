@@ -10,11 +10,13 @@ import {
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
-import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('usuarios')
 @Controller('usuarios') //localhost:3000/usuarios
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
@@ -28,6 +30,11 @@ export class UsuariosController {
     return this.usuariosService.criar(createUsuarioDto, usuario);
   }
 
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
+  @ApiQuery({ name: 'unidade_id', type: 'string', required: false })
   @Permissoes('ADM')
   @Get('buscar-tudo') //localhost:3000/usuarios/buscar-tudo
   buscarTudo(
@@ -52,7 +59,7 @@ export class UsuariosController {
   atualizar(
     @UsuarioAtual() usuario: Usuario,
     @Param('id') id: string,
-    @Body() updateUsuarioDto: UpdateUsuarioDto,
+    @Body() updateUsuarioDto: CreateUsuarioDto,
   ) {
     return this.usuariosService.atualizar(usuario, id, updateUsuarioDto);
   }

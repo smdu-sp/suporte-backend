@@ -1,4 +1,8 @@
+import { ApiProperty } from "@nestjs/swagger"
+
 export class CreateSistemaDto {
-    nome: string
+    @ApiProperty()
+    nome: string;
+    @ApiProperty()
     status?: boolean
 }
