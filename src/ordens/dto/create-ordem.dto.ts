@@ -16,7 +16,7 @@ export class CreateOrdemDto {
 
     @ApiProperty()
     @IsNumber({}, { message: 'Tipo inválido!' })
-    tipo_id: string;
+    sistema_id: string;
 
     @ApiProperty()
     @IsString({ message: 'É necessário descrever o problema a receber o serviço!' })

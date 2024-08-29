@@ -57,7 +57,7 @@ export class CategoriasService {
     const categorias = await this.prisma.categoria.findMany({
       where: searchParams,
       include: {
-        tipo: true
+        sistema: true
       },
       orderBy: { nome: 'asc' },
       skip: (pagina - 1) * limite,
@@ -77,8 +77,8 @@ export class CategoriasService {
     return categoria;
   }
 
-  async buscarPorTipo(tipo_id: string) {
-    const categorias = await this.prisma.categoria.findMany({ where: { tipo_id } });
+  async buscarPorTipo(sistema_id: string) {
+    const categorias = await this.prisma.categoria.findMany({ where: { sistema_id } });
     if (!categorias) throw new ForbiddenException('Nenhuma categoria encontrada.');
     return categorias;
   }

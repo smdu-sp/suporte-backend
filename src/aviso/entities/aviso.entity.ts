@@ -15,5 +15,5 @@ export class Aviso {
     @ApiProperty()
     status: boolean;
     @ApiProperty()
-    tipo_id: string;
+    sistema_id: string;
 }

@@ -13,5 +13,5 @@ export class CreateAvisoDto {
     @ApiProperty()
     status?: boolean;
     @ApiProperty()
-    tipo_id: string;
+    sistema_id: string;
 }

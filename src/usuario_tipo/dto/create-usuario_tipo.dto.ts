@@ -5,7 +5,7 @@ export class CreateUsuarioTipoDto {
     @ApiProperty()
     usuario_id: string;
     @ApiProperty()
-    tipo_id: string;
+    sistema_id: string;
     @ApiProperty()
     permissao?: Permissao
 }

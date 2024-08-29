@@ -4,7 +4,7 @@ export class CreateCategoriaDto {
     @ApiProperty()
     nome: string;
     @ApiProperty()
-    tipo_id: string;
+    sistema_id: string;
     @ApiProperty()
     status?: boolean;
 }

@@ -41,7 +41,7 @@ export class UsuariosService {
   }
 
   async permissoes(usuario: Usuario) {
-    const permissoes = await this.prisma.usuario_Tipo.findMany({
+    const permissoes = await this.prisma.usuario_Sistema.findMany({
       where: { usuario_id: usuario.id },
       select: { permissao: true },
       distinct: ['permissao'],
@@ -70,7 +70,7 @@ export class UsuariosService {
       }
     }
     if (!sistemas || sistemas.length == 0) {
-      const sistemas_padrao = await this.prisma.tipo.findMany({
+      const sistemas_padrao = await this.prisma.sistema.findMany({
         where: { padrao: true },
       });
       if (sistemas_padrao) 

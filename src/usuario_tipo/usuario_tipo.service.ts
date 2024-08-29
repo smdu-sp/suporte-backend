@@ -10,14 +10,14 @@ export class UsuarioTipoService {
   ) {}
 
   async criar(createUsuarioTipoDto: CreateUsuarioTipoDto, token: string) {
-    const novo_usuario_tipo = await this.prisma.usuario_Tipo.create({
+    const novo_usuario_tipo = await this.prisma.usuario_Sistema.create({
       data: createUsuarioTipoDto
     });
     return novo_usuario_tipo;
   }
 
   async buscarTudo() {
-    return await this.prisma.usuario_Tipo.findMany();
+    return await this.prisma.usuario_Sistema.findMany();
   }
 
   // findOne(id: number) {

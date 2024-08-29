@@ -186,7 +186,7 @@ model Aviso {
   cor         CorModalAviso @default(NEUTRAL)
   rota        String
   status      Boolean @default(false)
-  sistema_id     String
+  sistema_id  String
   
   sistema     Sistema @relation(fields: [sistema_id], references: [id])
 

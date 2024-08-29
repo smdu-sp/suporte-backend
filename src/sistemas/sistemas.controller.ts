@@ -23,7 +23,6 @@ export class SistemasController {
     return this.sistemasService.buscarTudo(+pagina, +limite, status, busca);
   }
 
-  
   @Get('lista-completa')
   listaCompleta() {
     return this.sistemasService.listaCompleta();
