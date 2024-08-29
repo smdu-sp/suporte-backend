@@ -30,7 +30,7 @@ export class SubcategoriasController {
   }
   
   @Get('buscar-por-categoria/:categoria_id')
-  buscarPorTipo(@Param('categoria_id') categoria_id: string) {
+  buscarPorCategoria(@Param('categoria_id') categoria_id: string) {
     return this.subcategoriasService.buscarPorCategoria(categoria_id);
   }
   

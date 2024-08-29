@@ -44,7 +44,7 @@ export class AvisoService {
       where: searchParams,
       skip: (pagina - 1) * limite,
       take: limite,
-      include: { tipo: true }
+      include: { sistema: true }
     });
     return {
       total: +total,

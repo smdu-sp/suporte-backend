@@ -25,9 +25,8 @@ export class OrdensController {
     @Query('solicitante_id') solicitante_id?: string,
     @Query('andar') andar?: string,
     @Query('sala') sala?: string,
-    @Query('tipo') tipo?: string,
   ) {
-    return this.ordensService.buscarTudo(usuario, +pagina, +limite, +status, unidade_id, solicitante_id, +andar, sala, +tipo);
+    return this.ordensService.buscarTudo(usuario, +pagina, +limite, +status, unidade_id, solicitante_id, +andar, sala);
   }
 
   @Get('buscar-por-id/:id')

@@ -30,15 +30,15 @@ model Usuario {
 
   ordens            Ordem[]
   servicos          Servico[]
-  usuario_sistema   Usuario_Sistema[]
+  usuario_sistema   UsuarioSistema[]
   unidade           Unidade?  @relation(fields: [unidade_id], references: [id])
   unidade_id        String?
 
   @@map("usuarios")
 }
 
-model Usuario_Sistema {
-  usuario_id    String      
+model UsuarioSistema {
+  usuario_id    String
   sistema_id    String
   permissao     Permissao   @default(USR)
 
@@ -142,7 +142,7 @@ model Sistema {
   categorias        Categoria[]
   ordens            Ordem[]
   avisos            Aviso[]
-  usuario_sistema   Usuario_Sistema[]
+  usuario_sistema   UsuarioSistema[]
   status            Boolean @default(true)
 
   @@map("sistema")
@@ -186,7 +186,7 @@ model Aviso {
   cor         CorModalAviso @default(NEUTRAL)
   rota        String
   status      Boolean @default(false)
-  sistema_id     String
+  sistema_id  String
   
   sistema     Sistema @relation(fields: [sistema_id], references: [id])
 

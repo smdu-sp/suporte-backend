@@ -42,7 +42,7 @@ export class UsuariosService {
   }
 
   async permissoes(usuario: Usuario) {
-    const permissoes = await this.prisma.usuario_Tipo.findMany({
+    const permissoes = await this.prisma.usuarioSistema.findMany({
       where: { usuario_id: usuario.id },
       select: { permissao: true },
       distinct: ['permissao'],
@@ -71,7 +71,7 @@ export class UsuariosService {
       }
     }
     if (!sistemas || sistemas.length == 0) {
-      const sistemas_padrao = await this.prisma.tipo.findMany({
+      const sistemas_padrao = await this.prisma.sistema.findMany({
         where: { padrao: true },
       });
       if (sistemas_padrao) 
@@ -82,13 +82,7 @@ export class UsuariosService {
     const usuario = await this.prisma.usuario.create({
       data: {
         ...createUsuarioDto,
-        ...(unidade_id ? { unidade_id } : {}),
-        ...(sistemas && sistemas.length > 0 ? { unidade_tipo: {
-          connect: sistemas.map((sistema) => ({
-            id: sistema.id,
-            permissao: sistema.permissao
-          }))
-        }} : {}),
+        ...(unidade_id ? { unidade_id } : {})
       }
     });
     if (!usuario)

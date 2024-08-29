@@ -29,9 +29,9 @@ export class CategoriasController {
     return this.categoriasService.listaCompleta();
   }
   
-  @Get('buscar-por-tipo/:tipo_id')
-  buscarPorTipo(@Param('tipo_id') tipo_id: string) {
-    return this.categoriasService.buscarPorTipo(tipo_id);
+  @Get('buscar-por-sistema/:sistema_id')
+  buscarPorSistema(@Param('sistema_id') sistema_id: string) {
+    return this.categoriasService.buscarPorSistema(sistema_id);
   }
   
   @Get('buscar-por-id/:id')

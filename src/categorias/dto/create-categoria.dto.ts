@@ -1,5 +1,5 @@
 export class CreateCategoriaDto {
     nome: string
-    tipo_id: string
+    sistema_id: string
     status?: boolean
 }

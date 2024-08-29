@@ -10,8 +10,8 @@ export class CreateOrdemDto {
     @IsString({ message: 'Sala inválida!' })
     sala: string;
 
-    @IsNumber({}, { message: 'Tipo inválido!' })
-    tipo_id: string;
+    @IsNumber({}, { message: 'Sistema inválido!' })
+    sistema_id: string;
 
     @IsString({ message: 'É necessário descrever o problema a receber o serviço!' })
     observacoes: string;
