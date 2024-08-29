@@ -58,7 +58,6 @@ export class CategoriasService {
       where: searchParams,
       include: {
         sistema: true
-        sistema: true
       },
       orderBy: { nome: 'asc' },
       skip: (pagina - 1) * limite,

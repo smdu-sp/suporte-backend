@@ -37,7 +37,7 @@ export class SistemasService {
   }
 
   async criar(createSistemaDto: CreateSistemaDto) {
-    const { nome, status } = createSistemaDto;
+    const { nome, padrao, status } = createSistemaDto;
     if (await this.buscaPorNome(nome)) throw new ForbiddenException('Ja existe um sistema com o mesmo nome');
     const novoSistema = await this.prisma.sistema.create({
       data: createSistemaDto
@@ -85,7 +85,7 @@ export class SistemasService {
   }
 
   async atualizar(id: string, updateSistemaDto: UpdateSistemaDto) {
-    const { nome, status } = updateSistemaDto;
+    const { nome, padrao, status } = updateSistemaDto;
     const sistema = await this.prisma.sistema.findUnique({ where: { id } });
     if (!sistema) throw new ForbiddenException('Sistema não encontrado.');
     if (nome) {
