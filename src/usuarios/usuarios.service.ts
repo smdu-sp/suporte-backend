@@ -11,14 +11,13 @@ import { $Enums, Usuario } from '@prisma/client';
 import { AppService } from 'src/app.service';
 import { SGUService } from 'src/sgu/sgu.service';
 import { Client, createClient } from 'ldapjs';
-import { connect } from 'http2';
 
 @Global()
 @Injectable()
 export class UsuariosService {
   constructor(
     private prisma: PrismaService,
-    private prisma2: SGUService,
+    private sgu: SGUService,
     private app: AppService,
   ) {}
 
@@ -58,7 +57,7 @@ export class UsuariosService {
     if (emailuser) throw new ForbiddenException('Email já cadastrado.');
     var unidade_id = createUsuarioDto.unidade_id;
     if (!unidade_id){
-      const usuario_sgu = await this.prisma2.tblUsuarios.findFirst({
+      const usuario_sgu = await this.sgu.tblUsuarios.findFirst({
         where: {
           cpRF: { startsWith: createUsuarioDto.login.substring(1) },
         },
@@ -198,7 +197,7 @@ export class UsuariosService {
       return usuarioReativado;
     }
     const rf = login.substring(1);
-    const usuario_sgu = await this.prisma2.tblUsuarios.findFirst({
+    const usuario_sgu = await this.sgu.tblUsuarios.findFirst({
       where: {
         cpRF: { startsWith: rf },
       }

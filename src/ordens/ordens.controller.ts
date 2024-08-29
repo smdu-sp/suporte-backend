@@ -28,7 +28,6 @@ export class OrdensController {
   @ApiQuery({ name: 'solicitante_id', type: 'string', required: false })
   @ApiQuery({ name: 'andar', type: 'string', required: false })
   @ApiQuery({ name: 'sala', type: 'string', required: false })
-  @ApiQuery({ name: 'tipo', type: 'string', required: false })
   @Get('buscar-tudo')
   buscarTudo(
     @UsuarioAtual() usuario: Usuario,

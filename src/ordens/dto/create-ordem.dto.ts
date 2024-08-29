@@ -15,7 +15,7 @@ export class CreateOrdemDto {
     sala: string;
 
     @ApiProperty()
-    @IsNumber({}, { message: 'Tipo inválido!' })
+    @IsString({ message: 'Sistema inválido!' })
     sistema_id: string;
 
     @ApiProperty()
