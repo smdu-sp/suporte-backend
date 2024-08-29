@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { UnidadesService } from './unidades.service';
 import { CreateUnidadeDto } from './dto/create-unidade.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiTags('unidades')
@@ -16,6 +16,10 @@ export class UnidadesController {
     return this.unidadesService.criar(createUnidadeDto);
   }
 
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
   @Permissoes('ADM')
   @Get('buscar-tudo')
   buscarTudo(

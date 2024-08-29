@@ -13,12 +13,10 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiTags('usuarios')
-@ApiResponse({ status: 201, description: 'Created.'})
-@ApiResponse({ status: 401, description: 'Forbidden.'})
 @Controller('usuarios') //localhost:3000/usuarios
 export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
@@ -32,6 +30,11 @@ export class UsuariosController {
     return this.usuariosService.criar(createUsuarioDto, usuario);
   }
 
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
+  @ApiQuery({ name: 'unidade_id', type: 'string', required: false })
   @Permissoes('ADM')
   @Get('buscar-tudo') //localhost:3000/usuarios/buscar-tudo
   buscarTudo(

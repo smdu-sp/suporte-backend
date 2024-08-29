@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CategoriasService } from './categorias.service';
 import { CreateCategoriaDto } from './dto/create-categoria.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiBearerAuth()
 @ApiTags('categorias')
@@ -14,6 +14,10 @@ export class CategoriasController {
     return this.categoriasService.criar(createCategoriaDto);
   }
 
+  @ApiQuery({ name: 'pagina', type: 'string', required: false })
+  @ApiQuery({ name: 'limite', type: 'string', required: false })
+  @ApiQuery({ name: 'status', type: 'string', required: false })
+  @ApiQuery({ name: 'busca', type: 'string', required: false })
   @Get('buscar-tudo')
   buscarTudo(
     @Query('pagina') pagina?: string,
