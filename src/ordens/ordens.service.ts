@@ -51,7 +51,6 @@ export class OrdensService {
   async criar(createOrdemDto: CreateOrdemDto, solicitante: Usuario) {
     const id = await this.geraId();
     const { unidade_id, andar, sala, sistema_id, observacoes, telefone, prioridade, tratar_com, categoria_id, subcategoria_id } = createOrdemDto;
-    const { unidade_id, andar, sala, sistema_id, observacoes, telefone, prioridade, tratar_com, categoria_id, subcategoria_id } = createOrdemDto;
     const chamadoAberto = await this.prisma.ordem.findFirst({
       where: {
         unidade_id,
@@ -137,5 +136,4 @@ export class OrdensService {
     if (!ordem) throw new ForbiddenException('Ordem não encontrada');
     return { ...ordem, suspensaoAtiva: suspensaoAtiva ? true : false };
   }
-
 }
