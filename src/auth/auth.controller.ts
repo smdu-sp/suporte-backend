@@ -14,21 +14,9 @@ import { IsPublic } from './decorators/is-public.decorator';
 import { UsuarioAtual } from './decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
 import { RefreshAuthGuard } from './guards/refresh.guard';
-import { ApiBody, ApiCreatedResponse, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsuarioToken } from './models/UsuarioToken';
-
-export class LoginDTO {
-  @ApiProperty({
-    description: 'Username do login',
-    example: 'x123456',
-  })
-  login: string;
-  @ApiProperty({
-    description: 'A sua senha',
-    example: 'senha123',
-  })
-  senha: string;
-}
+import { LoginDTO } from './models/dtos/login-request.dto';
 
 @ApiTags('auth')
 @Controller()
@@ -45,9 +33,9 @@ export class AuthController {
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Retorna 200 se tiver sucesso no login.'
+    description: 'Retorna 200 se tiver sucesso no login.',
+    type: UsuarioToken
   })
-  @ApiCreatedResponse({ type: UsuarioToken })
   async login(@Request() req: AuthRequest): Promise<UsuarioToken> {
     return await this.authService.login(req.user);
   }
