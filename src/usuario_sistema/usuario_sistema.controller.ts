@@ -1,4 +1,3 @@
-
 import { Controller, Get, Post, Body, HttpStatus } from '@nestjs/common';
 import { UsuarioSistemaService } from './usuario_sistema.service';
 import { CreateUsuarioSistemaDto } from './dto/create-usuario_sistema.dto';
