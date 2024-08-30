@@ -7,13 +7,25 @@ import {
   Param,
   Delete,
   Query,
+  HttpStatus,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiProperty, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+class UsuarioResponse {
+  @ApiProperty()
+  total: number;
+  @ApiProperty()
+  pagina: number;
+  @ApiProperty()
+  limite: number;
+  @ApiProperty()
+  data: any[]
+}
 
 @ApiBearerAuth()
 @ApiTags('usuarios')
@@ -30,13 +42,18 @@ export class UsuariosController {
     return this.usuariosService.criar(createUsuarioDto, usuario);
   }
 
+  @Permissoes('ADM')
+  @Get('buscar-tudo') //localhost:3000/usuarios/buscar-tudo
   @ApiQuery({ name: 'pagina', type: 'string', required: false })
   @ApiQuery({ name: 'limite', type: 'string', required: false })
   @ApiQuery({ name: 'status', type: 'string', required: false })
   @ApiQuery({ name: 'busca', type: 'string', required: false })
   @ApiQuery({ name: 'unidade_id', type: 'string', required: false })
-  @Permissoes('ADM')
-  @Get('buscar-tudo') //localhost:3000/usuarios/buscar-tudo
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Retorna 200 se conseguir buscar os usuarios.',
+    type: UsuarioResponse
+  })
   buscarTudo(
     @UsuarioAtual() usuario: Usuario,
     @Query('pagina') pagina?: string,

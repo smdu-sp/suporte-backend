@@ -108,7 +108,7 @@ export class UsuariosService {
       ...(unidade_id !== '' && { unidade_id }),
     };
     const total = await this.prisma.usuario.count({ where: searchParams });
-    if (total == 0) return { total: 0, pagina: 0, limite: 0, users: [] };
+    if (total == 0) return { total: 0, pagina: 0, limite: 0, data: [] };
     [pagina, limite] = this.app.verificaLimite(pagina, limite, total);
     const usuarios = await this.prisma.usuario.findMany({
       where: searchParams,
