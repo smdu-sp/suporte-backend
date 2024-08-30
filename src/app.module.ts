@@ -16,10 +16,11 @@ import { SubcategoriasModule } from './subcategorias/subcategorias.module';
 import { AvisoModule } from './aviso/aviso.module';
 import { SistemasModule } from './sistemas/sistemas.module';
 import { UsuarioSistemaModule } from './usuario_sistema/usuario_sistema.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Global()
 @Module({
-  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, CategoriasModule, SubcategoriasModule, AvisoModule, SistemasModule, UsuarioSistemaModule],
+  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, CategoriasModule, SubcategoriasModule, AvisoModule, SistemasModule, UsuarioSistemaModule, DashboardModule],
   exports: [AppService],
   controllers: [AppController],
   providers: [
