@@ -1,12 +1,27 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-@Controller('dashboard')
-export class DashboardController {
-  constructor(private readonly dashboardService: DashboardService) {}
+import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
+import { Usuario } from '@prisma/client';
 
-  @Get()
-  findAll() {
-    return this.dashboardService.findAll();
+
+@Controller('chamados')
+export class DashboardController {
+  constructor(private readonly dashboardService: DashboardService) { }
+
+  @Get("abertos")
+  buscarChamadosAbertos(
+    @UsuarioAtual() user: Usuario
+  ) {
+    return this.dashboardService.buscarChamadosAbertos(user.id);
   }
+
+  @Get("atribuidos")
+  buscarChamadosAtribuidos(
+    @UsuarioAtual() user: Usuario
+  ) {
+    return this.dashboardService.buscarChamadosAtribuidos(user.id);
+  }
+
+
 
 }
