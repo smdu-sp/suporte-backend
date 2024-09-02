@@ -11,6 +11,7 @@ import { $Enums, Usuario } from '@prisma/client';
 import { AppService } from 'src/app.service';
 import { SGUService } from 'src/sgu/sgu.service';
 import { Client, createClient } from 'ldapjs';
+import { MinioService } from 'src/minio/minio.service';
 
 @Global()
 @Injectable()
@@ -19,6 +20,7 @@ export class UsuariosService {
     private prisma: PrismaService,
     private sgu: SGUService,
     private app: AppService,
+    private minio: MinioService
   ) {}
 
   async listaCompleta() {
@@ -49,7 +51,10 @@ export class UsuariosService {
     return permissoes.map((p) => p.permissao);
   }
 
-  async criar(createUsuarioDto: CreateUsuarioDto, criador?: Usuario) {
+  async criar(createUsuarioDto: CreateUsuarioDto, arquivo?: any, criador?: Usuario) {
+    var avatar: string;
+    if (arquivo)
+      avatar = await this.minio.uploadImage(arquivo);
     var { sistemas } = createUsuarioDto;
     const loguser = await this.buscarPorLogin(createUsuarioDto.login);
     if (loguser) throw new ForbiddenException('Login já cadastrado.');
@@ -80,6 +85,7 @@ export class UsuariosService {
     const usuario = await this.prisma.usuario.create({
       data: {
         ...createUsuarioDto,
+        ...(avatar && { avatar }),
         ...(unidade_id ? { unidade_id } : {})
       }
     });

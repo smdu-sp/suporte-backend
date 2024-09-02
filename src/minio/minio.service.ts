@@ -1,9 +1,10 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Global, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import * as Minio from 'minio';
 import { UploadedObjectInfo } from 'minio/dist/main/internal/type';
 import * as sharp from 'sharp';
 
+@Global()
 @Injectable()
 export class MinioService {
   private minioClient: Minio.Client;
@@ -18,34 +19,34 @@ export class MinioService {
     })
   }
  
-  async uploadFile(
-    fileName: string, 
-    fileStream: Buffer, 
-    bucketName: string = process.env.MINIO_BUCKETNAME
-  ): Promise<string> {
-    const nome_imagem: string = `profile-pic/${randomUUID()}.${fileName.split('.').pop()}`;
-    const arquivo = await sharp(fileStream).webp().toBuffer();
-    console.log(arquivo);
-    const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, nome_imagem, fileStream);
+  async uploadImage(file: any, bucketName: string = process.env.MINIO_BUCKETNAME): Promise<string> {
+    const nome_imagem: string = `profile-pic/${randomUUID()}.webp`;
+    const arquivo = await sharp(file.buffer).webp().toBuffer();
+    if (!arquivo) throw new InternalServerErrorException();
+    const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, nome_imagem, arquivo, null, ['profile-pic', 'tag', 'tag2']);
     if (!uploading) throw new InternalServerErrorException();
     const url_imagem: string = await this.minioClient.presignedGetObject(bucketName, nome_imagem);
     return url_imagem;
   }
 
-  async listFiles(bucketName: string): Promise<{ url: string, nome: string }[]> {
+  async deleteFile(objectName: string, bucketName: string = process.env.MINIO_BUCKETNAME) {
+    return await this.minioClient.removeObject(bucketName, objectName);
+  }
+
+  async listFiles(bucketName: string) {
     const items: { url: string, nome: string }[] = [];
     const stream: Minio.BucketStream<Minio.BucketItem> = this.minioClient.listObjects(bucketName, 'profile-pic', true);
-    return new Promise((resolve, reject) => {
-      stream.on('data', async (obj) => {
-        try {
-          const url: string = await this.minioClient.presignedGetObject(bucketName, obj.name);
-          items.push({ url, nome: obj.name });
-        } catch (err) {
-          reject(err);
-        }
-      });
-      stream.on('error', (err) => reject(err));
-      stream.on('end', () => resolve(items));
-    });
+    // return new Promise((resolve, reject) => {
+    //   stream.on('data', async (obj) => {
+    //     try {
+    //       const url: string = await this.minioClient.presignedGetObject(bucketName, obj.name);
+    //       items.push({ url, nome: obj.name });
+    //     } catch (err) {
+    //       reject(err);
+    //     }
+    //   });
+    //   stream.on('error', (err) => reject(err));
+    //   stream.on('end', () => resolve(items));
+    // });
   }
 }

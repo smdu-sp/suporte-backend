@@ -8,6 +8,8 @@ import {
   Delete,
   Query,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { UsuariosService } from './usuarios.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
@@ -15,6 +17,8 @@ import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
 import { ApiBearerAuth, ApiProperty, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { IsPublic } from 'src/auth/decorators/is-public.decorator';
 
 class UsuarioResponse {
   @ApiProperty()
@@ -34,12 +38,14 @@ export class UsuariosController {
   constructor(private readonly usuariosService: UsuariosService) {}
 
   @Permissoes('ADM')
+  @UseInterceptors(FileInterceptor('foto'))
   @Post('criar') //localhost:3000/usuarios/criar
   criar(
     @UsuarioAtual() usuario: Usuario,
     @Body() createUsuarioDto: CreateUsuarioDto,
+    @UploadedFile() foto: any
   ) {
-    return this.usuariosService.criar(createUsuarioDto, usuario);
+    return this.usuariosService.criar(createUsuarioDto, foto, usuario);
   }
 
   @Permissoes('ADM')

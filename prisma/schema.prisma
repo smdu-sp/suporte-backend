@@ -23,7 +23,7 @@ model Usuario {
   email             String    @unique
   status            Int       @default(1)
   dev               Boolean   @default(false)
-  avatar            String?   @default("")
+  avatar            String?   @default("") @db.Text
 
   ultimologin       DateTime  @default(now())
   criadoEm          DateTime  @default(now())
