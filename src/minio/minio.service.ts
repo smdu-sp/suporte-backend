@@ -10,28 +10,40 @@ export class MinioService {
  
   constructor() {
     this.minioClient = new Minio.Client({
-      endPoint: process.env.ENDPOINT,
-      port: parseInt(process.env.PORT),
+      endPoint: process.env.MINIO_ENDPOINT,
+      port: parseInt(process.env.MINIO_PORT),
       useSSL: false,
-      accessKey: process.env.ACCESSKEY,
-      secretKey: process.env.SECRETKEY,
+      accessKey: process.env.MINIO_ACCESSKEY,
+      secretKey: process.env.MINIO_SECRETKEY,
     })
   }
  
-  async uploadFile(fileName: string, fileStream: Buffer, bucketName: string = process.env.BUCKETNAME) {
-    const nome = 'profile-pic/' + randomUUID() + '.' + fileName.split('.')[1];
+  async uploadFile(
+    fileName: string, 
+    fileStream: Buffer, 
+    bucketName: string = process.env.MINIO_BUCKETNAME
+  ): Promise<string> {
+    const nome_imagem: string = `profile-pic/${randomUUID()}.${fileName.split('.').pop()}`;
     const arquivo = await sharp(fileStream).webp().toBuffer();
     console.log(arquivo);
-    const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, nome, fileStream);
+    const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, nome_imagem, fileStream);
     if (!uploading) throw new InternalServerErrorException();
-    return this.minioClient.presignedGetObject(bucketName, nome);
+    const url_imagem: string = await this.minioClient.presignedGetObject(bucketName, nome_imagem);
+    return url_imagem;
   }
 
-  async listFiles(bucketName: string): Promise<Minio.BucketItem[]> {
-    const items: Minio.BucketItem[] = [];
-    const stream = this.minioClient.listObjects(bucketName, 'profile-pic', true);
+  async listFiles(bucketName: string): Promise<{ url: string, nome: string }[]> {
+    const items: { url: string, nome: string }[] = [];
+    const stream: Minio.BucketStream<Minio.BucketItem> = this.minioClient.listObjects(bucketName, 'profile-pic', true);
     return new Promise((resolve, reject) => {
-      stream.on('data', (obj) => items.push(obj));
+      stream.on('data', async (obj) => {
+        try {
+          const url: string = await this.minioClient.presignedGetObject(bucketName, obj.name);
+          items.push({ url, nome: obj.name });
+        } catch (err) {
+          reject(err);
+        }
+      });
       stream.on('error', (err) => reject(err));
       stream.on('end', () => resolve(items));
     });
