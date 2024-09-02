@@ -87,8 +87,8 @@ export class UsuariosController {
     @UploadedFile() foto: any
   ) {
     return this.usuariosService.atualizar(usuario, id, updateUsuarioDto, foto);
-  }
-
+  } 
+ 
   @Permissoes('ADM', 'TEC')
   @Get('lista-completa')
   listaCompleta() {
