@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import * as Minio from 'minio';
 import { UploadedObjectInfo } from 'minio/dist/main/internal/type';
+import * as sharp from 'sharp';
 
 @Injectable()
 export class MinioService {
@@ -19,6 +20,8 @@ export class MinioService {
  
   async uploadFile(fileName: string, fileStream: Buffer, bucketName: string = process.env.BUCKETNAME) {
     const nome = 'profile-pic/' + randomUUID() + '.' + fileName.split('.')[1];
+    const arquivo = await sharp(fileStream).webp().toBuffer();
+    console.log(arquivo);
     const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, nome, fileStream);
     if (!uploading) throw new InternalServerErrorException();
     return this.minioClient.presignedGetObject(bucketName, nome);
