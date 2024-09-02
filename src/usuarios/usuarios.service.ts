@@ -52,9 +52,6 @@ export class UsuariosService {
   }
 
   async criar(createUsuarioDto: CreateUsuarioDto, arquivo?: any, criador?: Usuario) {
-    var avatar: string;
-    if (arquivo)
-      avatar = await this.minio.uploadImage(arquivo);
     var { sistemas } = createUsuarioDto;
     const loguser = await this.buscarPorLogin(createUsuarioDto.login);
     if (loguser) throw new ForbiddenException('Login já cadastrado.');
@@ -93,6 +90,15 @@ export class UsuariosService {
       throw new InternalServerErrorException(
         'Não foi possível criar o usuário, tente novamente.',
       );
+    var avatar: string;
+    if (arquivo) {
+      avatar = await this.minio.uploadImage(arquivo, 'profile-pic/', usuario.id);
+      if (avatar)
+        await this.prisma.usuario.update({
+          where: { id: usuario.id },
+          data: { avatar }
+        })
+    }
     return usuario;
   }
 

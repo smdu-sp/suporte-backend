@@ -19,13 +19,14 @@ export class MinioService {
     })
   }
  
-  async uploadImage(file: any, bucketName: string = process.env.MINIO_BUCKETNAME): Promise<string> {
-    const nome_imagem: string = `profile-pic/${randomUUID()}.webp`;
-    const arquivo = await sharp(file.buffer).webp().toBuffer();
-    if (!arquivo) throw new InternalServerErrorException();
-    const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, nome_imagem, arquivo, null, ['profile-pic', 'tag', 'tag2']);
+  async uploadImage(file: any, folder: string = '', objectName?: string, bucketName: string = process.env.MINIO_BUCKETNAME): Promise<string> {
+    objectName = `${folder}${objectName || randomUUID()}.webp`;
+    console.log(objectName);
+    const stream = await sharp(file.buffer).webp().toBuffer();
+    if (!stream) throw new InternalServerErrorException();
+    const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, objectName, stream);
     if (!uploading) throw new InternalServerErrorException();
-    const url_imagem: string = await this.minioClient.presignedGetObject(bucketName, nome_imagem);
+    const url_imagem: string = await this.minioClient.presignedGetObject(bucketName, objectName);
     return url_imagem;
   }
 
