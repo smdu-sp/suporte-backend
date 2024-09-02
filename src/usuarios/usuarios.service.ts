@@ -21,7 +21,7 @@ export class UsuariosService {
     private sgu: SGUService,
     private app: AppService,
     private minio: MinioService
-  ) {}
+  ) { }
 
   async listaCompleta() {
     const lista = await this.prisma.usuario.findMany({
@@ -58,13 +58,13 @@ export class UsuariosService {
     const emailuser = await this.buscarPorEmail(createUsuarioDto.email);
     if (emailuser) throw new ForbiddenException('Email já cadastrado.');
     var unidade_id = createUsuarioDto.unidade_id;
-    if (!unidade_id){
+    if (!unidade_id) {
       const usuario_sgu = await this.sgu.tblUsuarios.findFirst({
         where: {
           cpRF: { startsWith: createUsuarioDto.login.substring(1) },
         },
       });
-      if (usuario_sgu){
+      if (usuario_sgu) {
         const codigo = usuario_sgu.cpUnid;
         const unidade = await this.prisma.unidade.findUnique({ where: { codigo } });
         unidade_id = unidade ? unidade.id : '';
@@ -74,7 +74,7 @@ export class UsuariosService {
       const sistemas_padrao = await this.prisma.sistema.findMany({
         where: { padrao: true },
       });
-      if (sistemas_padrao) 
+      if (sistemas_padrao)
         sistemas = sistemas_padrao.map((t) => {
           return { id: t.id };
         });
@@ -112,11 +112,13 @@ export class UsuariosService {
   ) {
     [pagina, limite] = this.app.verificaPagina(pagina, limite);
     const searchParams = {
-      ...(busca && { OR: [
-        { nome: { contains: busca } },
-        { login: { contains: busca } },
-        { email: { contains: busca } },
-      ]}),
+      ...(busca && {
+        OR: [
+          { nome: { contains: busca } },
+          { login: { contains: busca } },
+          { email: { contains: busca } },
+        ]
+      }),
       ...(unidade_id !== '' && { unidade_id }),
     };
     const total = await this.prisma.usuario.count({ where: searchParams });
@@ -161,6 +163,7 @@ export class UsuariosService {
     usuario: Usuario,
     id: string,
     updateUsuarioDto: CreateUsuarioDto,
+    arquivo?: any
   ) {
     const usuarioLogado = await this.buscarPorId(usuario.id);
     if (updateUsuarioDto.login) {
@@ -172,6 +175,15 @@ export class UsuariosService {
       data: updateUsuarioDto,
       where: { id },
     });
+    let avatar: any
+    if (arquivo) {
+      avatar = await this.minio.uploadImage(arquivo, 'profile-pic/', usuario.id);
+      if (avatar)
+        await this.prisma.usuario.update({
+          where: { id },
+          data: { avatar }
+        })
+    }
     return usuarioAtualizado;
   }
 
@@ -201,10 +213,10 @@ export class UsuariosService {
     return usuario;
   }
 
-  async buscarNovo(login: string){
+  async buscarNovo(login: string) {
     const usuarioExiste = await this.buscarPorLogin(login);
     if (usuarioExiste && usuarioExiste.status === 1) throw new ForbiddenException('Login já cadastrado.');
-    if (usuarioExiste && usuarioExiste.status !== 1){
+    if (usuarioExiste && usuarioExiste.status !== 1) {
       const usuarioReativado = await this.prisma.usuario.update({ where: { id: usuarioExiste.id }, data: { status: 1 } });
       return usuarioReativado;
     }
@@ -215,7 +227,7 @@ export class UsuariosService {
       }
     });
     var unidade_id = '';
-    if (usuario_sgu){
+    if (usuario_sgu) {
       const codigo = usuario_sgu.cpUnid;
       const unidade = await this.prisma.unidade.findUnique({ where: { codigo } });
       unidade_id = unidade ? unidade.id : '';

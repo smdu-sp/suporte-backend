@@ -78,13 +78,15 @@ export class UsuariosController {
   }
 
   @Permissoes('ADM', 'TEC', 'USR')
+  @UseInterceptors(FileInterceptor('foto'))
   @Patch('atualizar/:id') //localhost:3000/usuarios/atualizar/id
   atualizar(
     @UsuarioAtual() usuario: Usuario,
     @Param('id') id: string,
     @Body() updateUsuarioDto: CreateUsuarioDto,
+    @UploadedFile() foto: any
   ) {
-    return this.usuariosService.atualizar(usuario, id, updateUsuarioDto);
+    return this.usuariosService.atualizar(usuario, id, updateUsuarioDto, foto);
   }
 
   @Permissoes('ADM', 'TEC')
