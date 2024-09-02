@@ -8,16 +8,16 @@ export class MinioService {
   private minioClient: Minio.Client;
  
   constructor() {
-    const config = {
+    this.minioClient = new Minio.Client({
       endPoint: process.env.ENDPOINT,
       port: parseInt(process.env.PORT),
       useSSL: false,
       accessKey: process.env.ACCESSKEY,
       secretKey: process.env.SECRETKEY,
-    }
+    })
   }
  
-  async uploadFile(bucketName: string, fileName: string, fileStream: Buffer) {
+  async uploadFile(fileName: string, fileStream: Buffer, bucketName: string = process.env.BUCKETNAME) {
     const nome = 'profile-pic/' + randomUUID() + '.' + fileName.split('.')[1];
     const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, nome, fileStream);
     if (!uploading) throw new InternalServerErrorException();
