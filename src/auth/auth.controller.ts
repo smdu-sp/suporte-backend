@@ -16,7 +16,7 @@ import { Usuario } from '@prisma/client';
 import { RefreshAuthGuard } from './guards/refresh.guard';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsuarioToken } from './models/UsuarioToken';
-import { LoginDTO } from './models/dtos/login-request.dto';
+import { LoginDto } from './models/dtos/login-request.dto';
 
 @ApiTags('auth')
 @Controller()
@@ -29,7 +29,7 @@ export class AuthController {
   @IsPublic()
   @ApiBody({
     description: 'Senha e login para autenticação por JWT',
-    type: LoginDTO
+    type: LoginDto
   })
   @ApiResponse({
     status: HttpStatus.OK,
