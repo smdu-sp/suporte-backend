@@ -64,7 +64,6 @@ export class DashboardService {
           { sistema_id: usr[0].sistema.id },
           { data_solicitacao: { gte: dataAtual } },
           { status: 3 }
-          //Revisar qual status encerra o chamado
         ]
       }
     });

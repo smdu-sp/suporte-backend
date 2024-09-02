@@ -11,7 +11,7 @@ export class MinioController {
   @UseInterceptors(FileInterceptor('file'))
   @IsPublic()
   async create(@UploadedFile() file) {
-    const url = await this.minioService.uploadFile('suporte-smul', file.originalname, file.buffer);
+    const url = await this.minioService.uploadFile('suporte', file.originalname, file.buffer);
     return { url };
   }
 

@@ -6,23 +6,19 @@ import { UploadedObjectInfo } from 'minio/dist/main/internal/type';
 @Injectable()
 export class MinioService {
   private minioClient: Minio.Client;
-  
+ 
   constructor() {
-    this.minioClient = new Minio.Client({
-      endPoint: 'localhost',
-      port: 9000,
+    const config = {
+      endPoint: process.env.ENDPOINT,
+      port: parseInt(process.env.PORT),
       useSSL: false,
-      accessKey: 'QTp44UIpWUt7Opr2ar3u',
-      secretKey: 'hDWCC1E3mMKKtEha7So1A4Qi3BAvcraTTbKmUfxK',
-    });
+      accessKey: process.env.ACCESSKEY,
+      secretKey: process.env.SECRETKEY,
+    }
   }
-
-  async uploadFile(
-    bucketName: string, 
-    fileName: string, 
-    fileStream: Buffer
-  ): Promise<string> {
-    const nome = `profile-pic/${randomUUID()}.${fileName.split('.').pop()}`;
+ 
+  async uploadFile(bucketName: string, fileName: string, fileStream: Buffer) {
+    const nome = 'profile-pic/' + randomUUID() + '.' + fileName.split('.')[1];
     const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, nome, fileStream);
     if (!uploading) throw new InternalServerErrorException();
     return this.minioClient.presignedGetObject(bucketName, nome);
