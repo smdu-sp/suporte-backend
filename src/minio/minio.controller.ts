@@ -11,14 +11,14 @@ export class MinioController {
   @UseInterceptors(FileInterceptor('file'))
   @IsPublic()
   async create(@UploadedFile() file) {
-    const url = await this.minioService.uploadFile('suporte', file.originalname, file.buffer);
+    const url = await this.minioService.uploadFile(process.env.MINIO_BUCKETNAME, file.originalname, file.buffer);
     return { url };
   }
 
   @Get('buscar-tudo')
   @IsPublic()
   async buscar() {
-    const itens = this.minioService.listFiles('suporte-smul');
+    const itens = this.minioService.listFiles(process.env.MINIO_BUCKETNAME);
     return itens
   }
 }
