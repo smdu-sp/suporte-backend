@@ -34,14 +34,48 @@ export class MinioService {
     return url;
   }
 
-  async buscarTodos(bucketName: string) {
-    // const objects = await this.minioService(bucketName);
-    // const urls = await Promise.all(
-    //   objects.map(async (obj) => ({
-    //     ...obj,
-    //     url: await this.generateObjectUrl(bucketName, obj.name),
-    //   }))
-    // );
-    // return objects;
+  async config(bucketName: string) {
+    const objects = [];
+    const stream = this.minioService.client.listObjects(bucketName, 'profile-pic', true);
+    
+    stream.on('data', (obj) => objects.push(obj));
+    stream.on('error', (error) => {
+      console.error('Error listing objects:', error);
+      throw error;
+    });
+
+    await new Promise<void>((resolve, reject) => {
+      stream.on('end', resolve);
+      stream.on('error', reject);
+    });
+
+    return objects;
   }
+
+  async generateObjectUrl(bucketName: string, objectName: string) {
+    const url = await this.minioService.client.presignedGetObject(bucketName, objectName);
+    return url;
+  }
+
+  async listAllObjectsAndUrls(bucketName: string) {
+    const objects = await this.config(bucketName);
+    const urls = await Promise.all(
+      objects.map(async (obj) => ({
+        ...obj,
+        url: await this.generateObjectUrl(bucketName, obj.name),
+      }))
+    );
+    return urls;
+  }
+
+  // async buscarTodos(bucketName: string) {
+  //   // const objects = await this.minioService(bucketName);
+  //   // const urls = await Promise.all(
+  //   //   objects.map(async (obj) => ({
+  //   //     ...obj,
+  //   //     url: await this.generateObjectUrl(bucketName, obj.name),
+  //   //   }))
+  //   // );
+  //   // return objects;
+  // }
 }

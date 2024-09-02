@@ -18,7 +18,7 @@ export class MinioController {
   @Get('buscar-tudo')
   @IsPublic()
   async buscar() {
-    const itens = this.minioService.buscarTodos('suporte-smul');
+    const itens = this.minioService.listAllObjectsAndUrls('suporte-smul');
     return itens
   }
 }
