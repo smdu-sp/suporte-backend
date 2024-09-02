@@ -17,10 +17,11 @@ import { AvisoModule } from './aviso/aviso.module';
 import { SistemasModule } from './sistemas/sistemas.module';
 import { UsuarioSistemaModule } from './usuario_sistema/usuario_sistema.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { MinioModule } from './minio/minio.module';
 
 @Global()
 @Module({
-  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, CategoriasModule, SubcategoriasModule, AvisoModule, SistemasModule, UsuarioSistemaModule, DashboardModule],
+  imports: [UsuariosModule, AuthModule, PrismaModule, SGUModule, UnidadesModule, OrdensModule, ServicosModule, CategoriasModule, SubcategoriasModule, AvisoModule, SistemasModule, UsuarioSistemaModule, DashboardModule, MinioModule],
   exports: [AppService],
   controllers: [AppController],
   providers: [
