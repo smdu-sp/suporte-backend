@@ -78,6 +78,8 @@ export class UsuariosService {
           return { id: t.id };
         });
     }
+    console.log({unidade_id});
+    delete createUsuarioDto.unidade_id;
     const usuario = await this.prisma.usuario.create({
       data: {
         ...createUsuarioDto,

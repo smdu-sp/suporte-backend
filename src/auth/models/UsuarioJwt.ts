@@ -16,3 +16,4 @@ export class UsuarioJwt {
   @ApiProperty()
   avatar: string;
 }
+ 
