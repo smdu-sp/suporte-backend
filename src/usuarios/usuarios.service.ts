@@ -52,12 +52,11 @@ export class UsuariosService {
   }
 
   async criar(createUsuarioDto: CreateUsuarioDto, arquivo?: any, criador?: Usuario) {
-    var { sistemas } = createUsuarioDto;
+    var { sistemas, unidade_id } = createUsuarioDto;
     const loguser = await this.buscarPorLogin(createUsuarioDto.login);
     if (loguser) throw new ForbiddenException('Login já cadastrado.');
     const emailuser = await this.buscarPorEmail(createUsuarioDto.email);
     if (emailuser) throw new ForbiddenException('Email já cadastrado.');
-    var unidade_id = createUsuarioDto.unidade_id;
     if (!unidade_id) {
       const usuario_sgu = await this.sgu.tblUsuarios.findFirst({
         where: {
@@ -82,8 +81,8 @@ export class UsuariosService {
     const usuario = await this.prisma.usuario.create({
       data: {
         ...createUsuarioDto,
-        ...(avatar && { avatar }),
-        ...(unidade_id ? { unidade_id } : {})
+        ...(avatar && avatar !== '' && { avatar }),
+        ...(unidade_id && unidade_id !== '' && { unidade_id })
       }
     });
     if (!usuario)
