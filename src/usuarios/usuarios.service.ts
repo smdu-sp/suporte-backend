@@ -83,7 +83,7 @@ export class UsuariosService {
     const usuario = await this.prisma.usuario.create({
       data: {
         ...createUsuarioDto,
-        ...(avatar && avatar !== '' && { avatar }),
+        // ...(avatar && avatar !== '' && { avatar }),
         ...(unidade_id && unidade_id !== '' && { unidade_id })
       }
     });
@@ -91,15 +91,15 @@ export class UsuariosService {
       throw new InternalServerErrorException(
         'Não foi possível criar o usuário, tente novamente.',
       );
-    var avatar: string;
-    if (arquivo) {
-      avatar = await this.minio.uploadImage(arquivo, 'profile-pic/', usuario.id);
-      if (avatar)
-        await this.prisma.usuario.update({
-          where: { id: usuario.id },
-          data: { avatar }
-        })
-    }
+    // var avatar: string;
+    // if (arquivo) {
+    //   avatar = await this.minio.uploadImage(arquivo, 'profile-pic/', usuario.id);
+    //   if (avatar)
+    //     await this.prisma.usuario.update({
+    //       where: { id: usuario.id },
+    //       data: { avatar }
+    //     })
+    // }
     return usuario;
   }
 
@@ -166,6 +166,7 @@ export class UsuariosService {
     updateUsuarioDto: CreateUsuarioDto,
     arquivo?: any
   ) {
+    console.log(id);
     const usuarioLogado = await this.buscarPorId(usuario.id);
     if (updateUsuarioDto.login) {
       const usuario = await this.buscarPorLogin(updateUsuarioDto.login);
@@ -173,12 +174,12 @@ export class UsuariosService {
         throw new ForbiddenException('Login já cadastrado.');
     }
     const usuarioAtualizado = await this.prisma.usuario.update({
-      data: updateUsuarioDto,
       where: { id },
+      data: updateUsuarioDto,
     });
     let avatar: any
     if (arquivo) {
-      avatar = await this.minio.uploadImage(arquivo, 'profile-pic/', usuario.id);
+      avatar = await this.minio.uploadImage(arquivo, 'profile-pic/', id);
       if (avatar)
         await this.prisma.usuario.update({
           where: { id },
