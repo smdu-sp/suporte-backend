@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { Url } from "url";
 
 export class UsuarioPayload {
   @ApiProperty()
@@ -17,4 +18,6 @@ export class UsuarioPayload {
   iat?: number;
   @ApiProperty()
   exp?: number;
+  @ApiProperty()
+  avatar?: string;
 }

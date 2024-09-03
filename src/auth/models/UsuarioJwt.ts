@@ -13,4 +13,6 @@ export class UsuarioJwt {
   status: number;
   @ApiProperty()
   dev: boolean;
+  @ApiProperty()
+  avatar: string;
 }
