@@ -22,6 +22,11 @@ export class DashboardController {
     return this.dashboardService.buscarChamadosAtribuidos(user.id);
   }
 
-
+  @Get("tecnicos")
+  buscaTecnicos(
+    @UsuarioAtual() user: Usuario
+  ) {
+    return this.dashboardService.buscaTecnicos(user.id);
+  }
 
 }
