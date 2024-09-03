@@ -1,4 +1,5 @@
 import { Global, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { exec } from 'child_process';
 import { randomUUID } from 'crypto';
 import * as Minio from 'minio';
 import { UploadedObjectInfo } from 'minio/dist/main/internal/type';
@@ -20,13 +21,21 @@ export class MinioService {
   }
  
   async uploadImage(file: any, folder: string = '', objectName?: string, bucketName: string = process.env.MINIO_BUCKETNAME): Promise<string> {
+    if (!this.minioClient.bucketExists(bucketName)) 
+      throw new Minio.InvalidArgumentError("Bucket não existe"); // Alterar o erro, caso necessário.
     objectName = `${folder}${objectName || randomUUID()}.webp`;
-    console.log(objectName);
     const stream = await sharp(file.buffer).webp().toBuffer();
-    if (!stream) throw new InternalServerErrorException();
+    if (!stream) 
+      throw new InternalServerErrorException();
     const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, objectName, stream);
-    if (!uploading) throw new InternalServerErrorException();
+    await this.minioClient.setObjectTagging(bucketName, objectName, { data: null }, null);
+    if (!uploading) 
+      throw new InternalServerErrorException();
     const url_imagem: string = await this.minioClient.presignedGetObject(bucketName, objectName);
+    exec(`echo "${url_imagem}"`, (err, stdout, stderr) => {
+      if (err) console.log("erro: " + stderr);
+      console.log(stdout); 
+    });
     return url_imagem;
   }
 
