@@ -78,28 +78,26 @@ export class UsuariosService {
           return { id: t.id };
         });
     }
-    console.log({unidade_id});
     delete createUsuarioDto.unidade_id;
     const usuario = await this.prisma.usuario.create({
       data: {
         ...createUsuarioDto,
-        // ...(avatar && avatar !== '' && { avatar }),
         ...(unidade_id && unidade_id !== '' && { unidade_id })
       }
     });
+    for (let i = 0; i < sistemas.length; i++) {
+      await this.prisma.usuarioSistema.create({
+        data: {
+          usuario_id: usuario.id,
+          sistema_id: sistemas[i].id
+        }
+      })
+    }
     if (!usuario)
       throw new InternalServerErrorException(
         'Não foi possível criar o usuário, tente novamente.',
       );
-    // var avatar: string;
-    // if (arquivo) {
-    //   avatar = await this.minio.uploadImage(arquivo, 'profile-pic/', usuario.id);
-    //   if (avatar)
-    //     await this.prisma.usuario.update({
-    //       where: { id: usuario.id },
-    //       data: { avatar }
-    //     })
-    // }
+
     return usuario;
   }
 
