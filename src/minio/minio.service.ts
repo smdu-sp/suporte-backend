@@ -22,20 +22,16 @@ export class MinioService {
  
   async uploadImage(file: any, folder: string = '', objectName?: string, bucketName: string = process.env.MINIO_BUCKETNAME): Promise<string> {
     if (!this.minioClient.bucketExists(bucketName)) 
-      throw new Minio.InvalidArgumentError("Bucket não existe"); // Alterar o erro, caso necessário.
+      throw new Minio.InvalidArgumentError("Bucket não existe"); // Alterar o tipo de erro, caso necessário.
     objectName = `${folder}${objectName || randomUUID()}.webp`;
     const stream = await sharp(file.buffer).webp().toBuffer();
     if (!stream) 
       throw new InternalServerErrorException();
     const uploading: UploadedObjectInfo = await this.minioClient.putObject(bucketName, objectName, stream);
-    await this.minioClient.setObjectTagging(bucketName, objectName, { data: null }, null);
+    // await this.minioClient.setObjectTagging(bucketName, objectName, { data: null }, null);
     if (!uploading) 
       throw new InternalServerErrorException();
     const url_imagem: string = await this.minioClient.presignedGetObject(bucketName, objectName);
-    exec(`echo "${url_imagem}"`, (err, stdout, stderr) => {
-      if (err) console.log("erro: " + stderr);
-      console.log(stdout); 
-    });
     return url_imagem;
   }
 
