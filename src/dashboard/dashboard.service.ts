@@ -5,13 +5,18 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) { }
 
-  async buscarChamadosAbertos(id: string) {
-    const usr = await this.prisma.usuarioSistema.findMany({
+  buscaUsuarioSistema(id: string){
+    const usr = this.prisma.usuarioSistema.findMany({
       where: { usuario_id: id },
       select: { sistema: { select: { id: true, } } }
     });
     if (!usr) throw new ForbiddenException('Usuário não encontrado no sistema');
 
+    return usr;
+  }
+
+  async buscarChamadosAbertos(id: string) {
+    const usr = await this.buscaUsuarioSistema(id)
     const chamados = await this.prisma.ordem.count({
       where: {
         AND: [
@@ -40,11 +45,7 @@ export class DashboardService {
   }
 
   async buscarChamadosAtribuidos(id: string) {
-    const usr = await this.prisma.usuarioSistema.findMany({
-      where: { usuario_id: id },
-      select: { sistema: { select: { id: true, } } }
-    });
-    if (!usr) throw new ForbiddenException('Usuário não encontrado no sistema');
+    const usr = await this.buscaUsuarioSistema(id)
 
     const chamados = await this.prisma.ordem.count({
       where: {
@@ -75,11 +76,8 @@ export class DashboardService {
   }
 
   async buscaTecnicos(id: string) {
-    const usr = await this.prisma.usuarioSistema.findMany({
-      where: { usuario_id: id },
-      select: { sistema: { select: { id: true, } } }
-    });
-    if (!usr) throw new ForbiddenException('Usuário não encontrado no sistema');
+    const usr = await this.buscaUsuarioSistema(id)
+
     const tecnicos = await this.prisma.usuarioSistema.findMany({
       where: {
         OR : [
