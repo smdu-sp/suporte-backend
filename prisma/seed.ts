@@ -9,7 +9,7 @@ async function main() {
       email: 'gmlima@prefeitura.sp.gov.br',
       status: 1,
       dev: true,
-      avatar: 'https://github.com/gumends.png',
+      avatar: 'https://github.com/github.png',
     },
     update: {
       login: 'x398900',
@@ -17,7 +17,7 @@ async function main() {
       email: 'gmlima@prefeitura.sp.gov.br',
       status: 1,
       dev: true,
-      avatar: 'https://github.com/gumends.png',
+      avatar: 'https://github.com/github.png',
     },
   });
   console.log(root);
